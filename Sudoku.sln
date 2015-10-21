@@ -1,0 +1,33 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{09B3C204-AA06-4F78-81F1-979B4F3892B2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0E5F21A2-B38C-4452-8708-501FAA9F2792}"
+	ProjectSection(SolutionItems) = preProject
+		global.json = global.json
+		NuGet.Config = NuGet.Config
+	EndProjectSection
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Sudoku.Web", "src\Sudoku.Web\Sudoku.Web.xproj", "{C79DD7B5-4BE3-4E3F-BA40-B19B6E8E3940}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C79DD7B5-4BE3-4E3F-BA40-B19B6E8E3940}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C79DD7B5-4BE3-4E3F-BA40-B19B6E8E3940}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C79DD7B5-4BE3-4E3F-BA40-B19B6E8E3940}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C79DD7B5-4BE3-4E3F-BA40-B19B6E8E3940}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C79DD7B5-4BE3-4E3F-BA40-B19B6E8E3940} = {09B3C204-AA06-4F78-81F1-979B4F3892B2}
+	EndGlobalSection
+EndGlobal
