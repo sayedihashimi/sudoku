@@ -7,11 +7,11 @@
     public interface IMove {
         IBoard Board { get; }
         int Row { get; }
-        int Col { get; }
+        int Column { get; }
         int Value { get; }
     }
 
-    public class Move {
+    public class Move : IMove  {
 
         public IBoard Board { get; }
         public int Row { get; }

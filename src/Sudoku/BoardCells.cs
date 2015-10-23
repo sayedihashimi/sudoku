@@ -5,6 +5,7 @@
     using System.Threading.Tasks;
 
     public interface IBoardCells {
+        IBoard Board { get; }
         IList<int[]> Rows { get;}
         IList<int[]> Columns { get; }
         IList<int[,]> Squares { get; }
@@ -26,7 +27,7 @@
             Squares = GetSquares(Board);
         }
 
-        protected internal IBoard Board { get; }
+        public IBoard Board { get; }
 
         public IList<int[]> Rows { get; }
         public IList<int[]> Columns { get; }
