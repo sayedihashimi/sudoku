@@ -8,6 +8,12 @@
         IList<int[]> Rows { get;}
         IList<int[]> Columns { get; }
         IList<int[,]> Squares { get; }
+
+        int[] GetRowForCell(int row, int col);
+
+        int[] GetColumnForCell(int row, int col);
+
+        int[,] GetSquareForCell(int row, int col);
     }
 
     public class BoardCells : IBoardCells {
@@ -25,6 +31,7 @@
         public IList<int[]> Rows { get; }
         public IList<int[]> Columns { get; }
         public IList<int[,]> Squares { get; }
+        protected internal int[,][,] _squaresData;
 
         protected internal IList<int[]> GetRows(IBoard board) {
             if (board == null) { throw new ArgumentNullException(nameof(board)); }
@@ -64,10 +71,10 @@
 
             IList<int[,]> squareList = new List<int[,]>();
 
-            int[,][,] squares = new int[squaresize, squaresize][,];
+            _squaresData = new int[squaresize, squaresize][,];
             for(int i = 0; i < squaresize; i++) {
                 for(int j = 0; j < squaresize; j++) {
-                    squares[i, j] = new int[squaresize, squaresize];
+                    _squaresData[i, j] = new int[squaresize, squaresize];
                 }
             }
 
@@ -78,17 +85,34 @@
 
                     int subrow = row - sqRowIndex * squaresize;
                     int subcol = col - sqColIndex * squaresize;
-                    squares[sqRowIndex, sqColIndex][subrow, subcol] = board[row,col];
+                    _squaresData[sqRowIndex, sqColIndex][subrow, subcol] = board[row,col];
                 }
             }            
 
             for(int i = 0; i < squaresize; i++) {
                 for(int j = 0; j < squaresize; j++) {
-                    squareList.Add(squares[i, j]);
+                    squareList.Add(_squaresData[i, j]);
                 }
             }
 
             return squareList;
+        }
+
+        public int[] GetRowForCell(int row,int col) {
+            return Rows[row];
+        }
+
+        public int[] GetColumnForCell(int row, int col) {
+            return Columns[col];
+        }
+
+        public int[,] GetSquareForCell(int row, int col) {
+            // compute the square index and then the subindex
+            int squaresize = (int)Math.Sqrt(Board.Size);
+            int sqRowIndex = (int)(Math.Floor((double)(row / squaresize)));
+            int sqColIndex = (int)(Math.Floor((double)(col / squaresize)));
+
+            return _squaresData[sqRowIndex, sqColIndex];
         }
     }
 }
