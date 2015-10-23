@@ -26,5 +26,26 @@
             Column = column;
             Value = value;
         }
+
+        public override bool Equals(object obj) {
+            IMove other = (IMove)obj;
+
+            if(other != null) {
+                if(other.Row != Row ||
+                    other.Column != Column ||
+                    other.Value != Value ||
+                    !other.Board.Equals(Board)) {
+                    return false;
+                }
+
+                return true;
+            }
+
+            return false;
+        }
+
+        public override int GetHashCode() {
+            return Row.GetHashCode() + Column.GetHashCode() + Value.GetHashCode() + Board.GetHashCode();
+        }
     }
 }

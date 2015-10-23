@@ -62,5 +62,31 @@
                 }
             }
         }
+
+        public override bool Equals(object obj) {
+            Board other = (Board)obj;
+            if(other != null) {
+                if(other.Size != Size ||
+                    other._data.Rank != _data.Rank ||
+                    other._data.GetLength(0) != _data.GetLength(0)) {
+                    return false;
+                }
+
+                for(int i = 0;i< Size; i++) {
+                    for(int j = 0;j< Size; j++) {
+                        if (_data[i, j] != other._data[i, j]) {
+                            return false;
+                        }
+                    }
+                }
+
+                return true;
+            }
+            return false;
+        }
+
+        public override int GetHashCode() {
+            return  Size.GetHashCode() + _data.GetHashCode();
+        }
     }
 }
