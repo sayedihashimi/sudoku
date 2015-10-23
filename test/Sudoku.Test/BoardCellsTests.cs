@@ -20,10 +20,8 @@
                     {6,7,4, 8,0,0, 0,0,3 }
                 };
 
-            IBoard board = new Board(data);
-
-            IBoardCells boardCells = new BoardCells();
-            var rows = boardCells.GetRows(board);
+            IBoardCells boardCells = new BoardCells(new Board(data));
+            var rows = boardCells.Rows;
             Assert.Equal(9, rows.Count);
             Assert.True(rows[0].SequenceEqual(new int[] { 9, 0, 0, 0, 0, 5, 6, 8, 1 }));
             Assert.True(rows[1].SequenceEqual(new int[] { 0, 6, 0, 2, 8, 0, 7, 0, 0 }));
@@ -50,10 +48,8 @@
                     {6,7,4, 8,0,0, 0,0,3 }
                 };
 
-            IBoard board = new Board(data);
-
-            IBoardCells boardCells = new BoardCells();
-            var columns = boardCells.GetColumns(board);
+            IBoardCells boardCells = new BoardCells(new Board(data));
+            var columns = boardCells.Columns;
             Assert.Equal(9, columns.Count);
             Assert.True(columns[0].SequenceEqual(new int[] { 9, 0, 0, 0, 0, 1, 8, 0, 6 }));
             Assert.True(columns[1].SequenceEqual(new int[] { 0, 6, 0, 8, 0, 9, 0, 0, 7 }));
@@ -82,10 +78,8 @@
                     {6,7,4, 8,0,0, 0,0,3 }
                 };
 
-            IBoard board = new Board(data);
-
-            IBoardCells boardCells = new BoardCells();
-            var squares = boardCells.GetSquares(board);
+            IBoardCells boardCells = new BoardCells(new Board(data));
+            var squares = boardCells.Squares;
             Assert.Equal(9, squares.Count);
 
             Assert.Equal(9, squares.ElementAt(0)[0,0]);

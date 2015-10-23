@@ -5,13 +5,28 @@
     using System.Threading.Tasks;
 
     public interface IBoardCells {
-        IList<int[]> GetRows(IBoard board);
-        IList<int[]> GetColumns(IBoard board);
-        IList<int[,]> GetSquares(IBoard board);
+        IList<int[]> Rows { get;}
+        IList<int[]> Columns { get; }
+        IList<int[,]> Squares { get; }
     }
 
     public class BoardCells : IBoardCells {
-        public IList<int[]> GetRows(IBoard board) {
+        public BoardCells(IBoard board) {
+            if (board == null) { throw new ArgumentNullException(nameof(board)); }
+
+            Board = board;
+            Rows = GetRows(Board);
+            Columns = GetColumns(Board);
+            Squares = GetSquares(Board);
+        }
+
+        protected internal IBoard Board { get; }
+
+        public IList<int[]> Rows { get; }
+        public IList<int[]> Columns { get; }
+        public IList<int[,]> Squares { get; }
+
+        protected internal IList<int[]> GetRows(IBoard board) {
             if (board == null) { throw new ArgumentNullException(nameof(board)); }
 
             IList<int[]> rows = new List<int[]>();
@@ -26,7 +41,7 @@
 
             return rows;
         }
-        public IList<int[]> GetColumns(IBoard board) {
+        protected internal IList<int[]> GetColumns(IBoard board) {
             if (board == null) { throw new ArgumentNullException(nameof(board)); }
 
             IList<int[]> cols = new List<int[]>();
@@ -42,7 +57,7 @@
             return cols;
         }
 
-        public IList<int[,]> GetSquares(IBoard board) {
+        protected internal IList<int[,]> GetSquares(IBoard board) {
             if (board == null) { throw new ArgumentNullException(nameof(board)); }
             int squaresize = (int)Math.Sqrt(board.Size);
             int size = board.Size;
