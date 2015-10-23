@@ -23,7 +23,7 @@ namespace Sudoku.Web
     public class Startup
     {
         public Startup(IHostingEnvironment env, IApplicationEnvironment appEnv)
-        {
+        {            
             // Setup configuration sources.
 
             var builder = new ConfigurationBuilder()
