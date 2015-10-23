@@ -18,15 +18,6 @@
         public Board(int[,] data) {
             if (data == null) { throw new ArgumentNullException(nameof(data)); }
 
-            // validate that the length on each dimension matches and not empty
-            if (data.Length <= 0) {
-                throw new ArgumentException("Array provided for data is empty");
-            }
-
-            if(data.GetLength(0) != data.GetLength(1)) {
-                throw new ArgumentException("Array provided for data has different lengths for rows and columns");
-            }
-
             Validate(data);
             _data = (int[,])data.Clone();
         }
