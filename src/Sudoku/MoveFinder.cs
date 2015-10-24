@@ -22,7 +22,6 @@
                             moves.Add(move);
                         }
                     }
-
                 }
             }
 

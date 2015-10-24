@@ -9,15 +9,16 @@
         int Row { get; }
         int Column { get; }
         int Value { get; }
+        IMoveScore Score { get; set; }
     }
 
     public class Move : IMove  {
-
         public IBoard Board { get; }
         public int Row { get; }
         public int Column { get; }
         public int Value { get; }
 
+        public IMoveScore Score { get; set; }
         public Move(IBoard board, int row, int column, int value) {
             if (board == null) { throw new ArgumentNullException(nameof(board)); }
 

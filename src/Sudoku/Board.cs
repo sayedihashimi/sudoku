@@ -34,7 +34,7 @@
             }
         }
 
-        protected internal void Validate(int[,] data) {
+        public static void Validate(int[,] data) {
             if (data == null) { throw new ArgumentNullException(nameof(data)); }
 
             if (data.Rank != 2) {

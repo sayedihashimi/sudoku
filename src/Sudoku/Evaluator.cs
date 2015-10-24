@@ -8,7 +8,7 @@
         /// <summary>
         /// This will return the score for the given board
         /// </summary>
-        IScore GetScore(IBoard board);
+        IBoardScore GetScore(IBoard board);
 
         /// <summary>
         /// Will return true if the board is in a valid state, this will not check to see if the board is "solveable"
@@ -27,7 +27,7 @@
     }
 
     public abstract class BaseEvaluator : IEvaluator {
-        public abstract IScore GetScore(IBoard board);
+        public abstract IBoardScore GetScore(IBoard board);
 
         public bool HasMoves(IBoard board) {
             // check that the board is valid and that there are cells with a 0
@@ -40,24 +40,6 @@
             // check to make sure every cell value is <= board.Size
 
             throw new NotImplementedException();
-        }
-
-        internal IList<int[]> GetRows(IBoard board) {
-            if (board == null) { throw new ArgumentNullException(nameof(board)); }
-
-            IList<int[]> rows = new List<int[]>();
-
-            for(int i = 0; i < board.Size; i++) {
-                int[] row = new int[board.Size];
-
-                for (int j = 0; j < board.Size; j++) {
-                    row[j] = board[i, j];
-                }
-
-                rows.Add(row);
-            }
-
-            return rows;
         }
     }
 }
