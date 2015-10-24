@@ -13,13 +13,20 @@
             if (boardCells == null) { throw new ArgumentNullException(nameof(boardCells)); }
 
             IList<IMove> moves = new List<IMove>();
-
-
-
             // visit each cell and get available moves
+            for(int row = 0; row < boardCells.Board.Size; row++) {
+                for(int col =0; col < boardCells.Board.Size; col++) {
+                    var cellMoves = GetMovesForCell(boardCells, row, col);
+                    foreach(var move in cellMoves) {
+                        if (!moves.Contains(move)) {
+                            moves.Add(move);
+                        }
+                    }
 
+                }
+            }
 
-            throw new NotImplementedException();
+            return moves;
         }
 
         public IList<IMove> GetMovesForCell(IBoardCells boardCells, int row, int col) {
