@@ -57,5 +57,9 @@
         public override int GetHashCode() {
             return Row.GetHashCode() + Column.GetHashCode() + Value.GetHashCode() + Board.GetHashCode();
         }
+
+        public override string ToString() {
+            return $"[{Row},{Column}]={Value}";
+        }
     }
 }

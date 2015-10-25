@@ -11,8 +11,9 @@
 
             MoveFinder = moveFinder;
             Evaluator = evaluator;
+            _numMovesTried = 0;
         }
-
+        public int _numMovesTried;
         private IMoveFinder MoveFinder { get; }
         private IEvaluator Evaluator { get; }
 
@@ -50,11 +51,21 @@
             movesRemaining = forcedresult.MovesRemaining;
             List<IMove> movesPlayed = forcedresult.MovesPlayed;
 
+            // make sure each score has a movescore
+            foreach(var move in movesRemaining) {
+                if(move.MoveScore == null) {
+                    move.MoveScore = Evaluator.GetScore(move);
+                }
+            }
+
+            // sort the moves remaining before starting
+            movesRemaining = movesRemaining.OrderBy(move => move.MoveScore.ScoreValue*(-1.0d)).ToList();
             if (movesRemaining.Count > 0) {
                 // now play the remaining moves
                 foreach (var move in movesRemaining) {
                     var newmv = new MoveResult(new BoardCells(new Board(current.Board, move)), movesPlayed, null);
                     var newresult = SolveBoard(newmv);
+                    _numMovesTried++;
                     if (newresult != null && IsSolved(newresult)) {
                         // see if it's solved
                         return newresult;
@@ -90,6 +101,7 @@
                 foreach(var move in forcedMoves) {
                     playboard = new Board(playboard, move);
                     movesPlayed.Add(move);
+                    _numMovesTried++;
                 }
 
                 result = new BoardCells(playboard);

@@ -48,6 +48,39 @@
             }
         }
 
+        /// <summary>
+        /// Only works for boards with size 9
+        /// </summary>
+        /// <param name="dataStr"></param>
+        public Board(string dataStr) : this(new Board(GetDataFromString(dataStr))) {
+        }
+
+        private static int[,] GetDataFromString(string dataStr) {
+            if (string.IsNullOrEmpty(dataStr)) { throw new ArgumentNullException(nameof(dataStr)); }
+
+            dataStr = dataStr.Trim();
+            int strLen = dataStr.Length;
+            if (dataStr.Length != 81) {
+                throw new ArgumentException("Expected a string with 81 characters");
+            }
+            int[,] data = new int[9, 9];
+            var chars = dataStr.ToArray();
+
+            int index = 0;
+            for (int row = 0; row < 9; row++) {
+                for (int col = 0; col < 9; col++) {
+                    string intStr = new string(new char[] { chars[index] });
+                    if (intStr.Equals(".")) {
+                        intStr = "0";
+                    }
+                    data[row, col] = int.Parse(intStr);
+                    index++;
+                }
+            }
+
+            return data;
+        }
+
         public int Size {
             get {
                 return _data.GetLength(0);

@@ -28,6 +28,12 @@
             }
         }
 
+        public static Score MinScore {
+            get {
+                return new Score(double.MinValue);
+            }
+        }
+
         public override bool Equals(object obj) {
             IScore other = (IScore)obj;
             if(other != null) {
@@ -40,6 +46,10 @@
 
         public override int GetHashCode() {
             return ScoreValue.GetHashCode();
+        }
+
+        public override string ToString() {
+            return $"Score={ScoreValue}";
         }
     }
 }

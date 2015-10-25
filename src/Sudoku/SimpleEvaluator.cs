@@ -21,14 +21,15 @@
             if(moves == null || moves.Count == 0) {
                 // board should be solved
                 if (HasMoves(board)) {
-                    throw new InvalidOperationException("No moves found for board but the board has moves left");
+                    // unsolvable board
+                    return Score.MinScore;
                 }
 
                 // the board is solved
                 return Score.MaxScore;
             }
 
-            return new Score(1 / (moves.Count));
+            return new Score(1.0d / (moves.Count));
         }
 
         public override IScore GetScore(IMove move) {
