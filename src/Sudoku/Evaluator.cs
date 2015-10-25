@@ -8,7 +8,12 @@
         /// <summary>
         /// This will return the score for the given board
         /// </summary>
-        IBoardScore GetScore(IBoard board);
+        IScore GetScore(IBoard board);
+
+        /// <summary>
+        /// This will return the score for the given move
+        /// </summary>
+        IScore GetScore(IMove move);
 
         /// <summary>
         /// Will return true if the board is in a valid state, this will not check to see if the board is "solveable"
@@ -26,20 +31,5 @@
         bool HasMoves(IBoard board);
     }
 
-    public abstract class BaseEvaluator : IEvaluator {
-        public abstract IBoardScore GetScore(IBoard board);
 
-        public bool HasMoves(IBoard board) {
-            // check that the board is valid and that there are cells with a 0
-
-            throw new NotImplementedException();
-        }
-
-        public bool IsValid(IBoard board) {
-            // check to make sure there are no duplicates in rows/columns/squares
-            // check to make sure every cell value is <= board.Size
-
-            throw new NotImplementedException();
-        }
-    }
 }

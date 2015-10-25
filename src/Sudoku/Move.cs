@@ -9,7 +9,8 @@
         int Row { get; }
         int Column { get; }
         int Value { get; }
-        IMoveScore Score { get; set; }
+        bool? IsForcedMove { get; set; }
+        IScore MoveScore { get; set; }
     }
 
     public class Move : IMove  {
@@ -17,15 +18,23 @@
         public int Row { get; }
         public int Column { get; }
         public int Value { get; }
+        public bool? IsForcedMove { get; set; }
 
-        public IMoveScore Score { get; set; }
-        public Move(IBoard board, int row, int column, int value) {
+        public IScore MoveScore { get; set; }
+        public Move(IBoard board, int row, int column, int value) : this(board, row, column, value, null) {
+        }
+        public Move(IBoard board, int row, int column, int value, bool? isForcedMove) {
             if (board == null) { throw new ArgumentNullException(nameof(board)); }
 
             Board = board;
             Row = row;
             Column = column;
             Value = value;
+            IsForcedMove = isForcedMove;
+
+            if(IsForcedMove.HasValue && IsForcedMove.Value) {
+                MoveScore = Score.MaxScore;
+            }
         }
 
         public override bool Equals(object obj) {

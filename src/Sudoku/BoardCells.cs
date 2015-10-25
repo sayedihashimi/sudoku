@@ -27,6 +27,20 @@
             Squares = GetSquares(Board);
         }
 
+        public BoardCells(IBoardCells boardCells) {
+            if (boardCells == null) { throw new ArgumentNullException(nameof(boardCells)); }
+
+            Board = boardCells.Board;
+            Rows = boardCells.Rows;
+            Columns = boardCells.Columns;
+            Squares = boardCells.Squares;
+
+            BoardCells other = (BoardCells)boardCells;
+            if(other != null) {
+                _squaresData = other._squaresData;
+            }
+        }
+
         public IBoard Board { get; }
 
         public IList<int[]> Rows { get; }
