@@ -146,6 +146,6 @@
 
         public override int GetHashCode() {
             return Size.GetHashCode() + _data.GetHashCode();
-        }
+        }        
     }
 }

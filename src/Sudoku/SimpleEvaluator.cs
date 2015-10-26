@@ -35,7 +35,16 @@
                 return Score.MaxScore;
             }
 
-            return new Score(-1.0d * moves.Count);
+            int numForcedMoves = 0;
+            foreach(var move in moves) {
+                if (move.IsForcedMove.HasValue && move.IsForcedMove.Value) {
+                    numForcedMoves++;
+                }
+            }
+
+            double scorevalue = -1*(2 * (numForcedMoves) + (moves.Count - numForcedMoves));
+            return new Score(scorevalue);
+            // return new Score(-1.0d * moves.Count);
         }
 
         public override IScore GetScore(IMove move) {

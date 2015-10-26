@@ -63,6 +63,11 @@
             if (movesRemaining.Count > 0) {
                 // now play the remaining moves
                 foreach (var move in movesRemaining) {
+                    if (move.MoveScore.Equals(Score.MinScore)) {
+                        // don't play failed moves
+                        continue;
+                    }
+
                     var newmv = new MoveResult(new BoardCells(new Board(current.Board, move)), movesPlayed, null);
                     var newresult = SolveBoard(newmv);
                     _numMovesTried++;
