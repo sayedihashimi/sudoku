@@ -10,6 +10,8 @@
         /// </summary>
         IScore GetScore(IBoard board);
 
+        IScore GetScore(IBoardCells boardCells);
+
         /// <summary>
         /// This will return the score for the given move
         /// </summary>
@@ -30,6 +32,4 @@
         /// <returns></returns>
         bool HasMoves(IBoard board);
     }
-
-
 }

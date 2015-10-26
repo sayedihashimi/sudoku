@@ -6,6 +6,7 @@
 
     public abstract class BaseEvaluator : IEvaluator {
         public abstract IScore GetScore(IMove move);
+        public abstract IScore GetScore(IBoardCells boardCells);
         public abstract IScore GetScore(IBoard board);
 
         public bool HasMoves(IBoard board) {

@@ -81,7 +81,7 @@
 
         protected internal bool IsSolved(MoveResult moveResult) {
             if (moveResult == null) { throw new ArgumentNullException(nameof(moveResult)); }
-            var score = Evaluator.GetScore(moveResult.CurrentBoard.Board);
+            var score = Evaluator.GetScore(moveResult.CurrentBoard);
             return Score.MaxScore.Equals(score);
         }
         /// <summary>

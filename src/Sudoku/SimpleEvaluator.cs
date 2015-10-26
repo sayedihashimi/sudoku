@@ -15,12 +15,18 @@
         public override IScore GetScore(IBoard board) {
             if (board == null) { throw new ArgumentNullException(nameof(board)); }
 
+            return GetScore(new BoardCells(board));
+        }
+
+        public override IScore GetScore(IBoardCells boardCells) {
+            if (boardCells == null) { throw new ArgumentNullException(nameof(boardCells)); }
+
             // for this basic implementation the score is 1/(# moves on board)
-            IList<IMove> moves = MoveFinder.FindMoves(new BoardCells(board));
-            
-            if(moves == null || moves.Count == 0) {
+            IList<IMove> moves = MoveFinder.FindMoves(boardCells);
+
+            if (moves == null || moves.Count == 0) {
                 // board should be solved
-                if (HasMoves(board)) {
+                if (HasMoves(boardCells.Board)) {
                     // unsolvable board
                     return Score.MinScore;
                 }
@@ -29,7 +35,7 @@
                 return Score.MaxScore;
             }
 
-            return new Score(1.0d / (moves.Count));
+            return new Score(-1.0d * moves.Count);
         }
 
         public override IScore GetScore(IMove move) {

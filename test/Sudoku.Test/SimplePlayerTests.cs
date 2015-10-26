@@ -133,15 +133,38 @@
             Assert.Equal(solvedBoard, result.CurrentBoard.Board);
         }
 
-        //[Fact]
-        //public void CanSolveAHardBoard() {
-        //    IBoard board = new Board("92....3...6.31...4...6..1...7..3...2.4..8..3.1...2..7...9..7...3...48.9...4....58");
-        //    var moveFinder = new SimpleMoveFinder();
-        //    var player = new SimplePlayer(moveFinder, new SimpleEvaluator(moveFinder));
-        //    var result = player.SolveBoard(board);
+        [Fact]
+        public void CanSolveAHardBoard() {
+            IBoard board = new Board("92....3...6.31...4...6..1...7..3...2.4..8..3.1...2..7...9..7...3...48.9...4....58");
+            var moveFinder = new SimpleMoveFinder();
+            var player = new SimplePlayer(moveFinder, new SimpleEvaluator(moveFinder));
+            var result = player.SolveBoard(board);
 
-        //    IBoard solvedBoard = new Board("921874365865319724437652189678931542542786931193425876289567413356148297714293658");
-        //    Assert.Equal(solvedBoard, result.CurrentBoard.Board);
-        //}
+            IBoard solvedBoard = new Board("921874365865319724437652189678931542542786931193425876289567413356148297714293658");
+            Assert.Equal(solvedBoard, result.CurrentBoard.Board);
+        }
+
+        [Fact]
+        public void Foo() {
+            // http://www.sudoku-solutions.com/
+            IBoard board = new Board("9218743658653197244376521896789315425427869311934258762895674133561482.77142936.8");
+
+            var moveFinder = new SimpleMoveFinder();
+            var eval = new SimpleEvaluator(moveFinder);
+
+            var str1 = "9218743658653197244376521896789315425427869311934258762895674133561482.77142936.8";
+            var str2 = "921874365865319724437652189678931542542786931193425876289567.133561482.77142936.8";
+            var str3 = "921874365865319724437652189678931542542786931193425876289567.133561482..7142936.8";
+            var str4 = ".21874365865319724437652189678931542542786931193425876289567.133561482.77142936.8";
+            var str5 = "9.1874365865319724437652189678931542542786931193425876289567.133561482.77142936.8";
+
+            var score1 = eval.GetScore(new Board(str1));
+            var score2 = eval.GetScore(new Board(str2));
+            var score3 = eval.GetScore(new Board(str3));
+            var score4 = eval.GetScore(new Board(str4));
+            var score5 = eval.GetScore(new Board(str5));
+
+            string foo = "bar";
+        }
     }
 }
