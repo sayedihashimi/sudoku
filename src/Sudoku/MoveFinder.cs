@@ -14,10 +14,10 @@
 
             List<IMove> moves = new List<IMove>();
             // visit each cell and get available moves
-            for(int row = 0; row < boardCells.Board.Size; row++) {
-                for(int col =0; col < boardCells.Board.Size; col++) {
+            for (int row = 0; row < boardCells.Board.Size; row++) {
+                for (int col = 0; col < boardCells.Board.Size; col++) {
                     var cellMoves = GetMovesForCell(boardCells, row, col);
-                    foreach(var move in cellMoves) {
+                    foreach (var move in cellMoves) {
                         if (!moves.Contains(move)) {
                             moves.Add(move);
                         }
@@ -41,23 +41,17 @@
 
                 foreach (int num in boardCells.GetRowForCell(row, col)) {
                     if (num == 0) { continue; }
-                    if (availableNumbers.Contains(num)) {
-                        availableNumbers[num - 1] = 0;
-                    }
+                    availableNumbers[num - 1] = 0;
                 }
 
                 foreach (int num in boardCells.GetColumnForCell(row, col)) {
                     if (num == 0) { continue; }
-                    if (availableNumbers.Contains(num)) {
-                        availableNumbers[num - 1] = 0;
-                    }
+                    availableNumbers[num - 1] = 0;
                 }
 
                 foreach (int num in boardCells.GetSquareForCell(row, col)) {
                     if (num == 0) { continue; }
-                    if (availableNumbers.Contains(num)) {
-                        availableNumbers[num - 1] = 0;
-                    }
+                    availableNumbers[num - 1] = 0;
                 }
 
                 foreach (int num in availableNumbers) {

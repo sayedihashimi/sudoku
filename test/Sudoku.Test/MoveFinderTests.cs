@@ -132,6 +132,9 @@
                 var moves = finder.FindMoves(new BoardCells(board));
 
                 string foo = "bar";
+
+                moves = finder.FindMoves(new BoardCells(new Board("000500000003000000601090400002010900090420100007900320736148259800000710209070003")));
+                // now get forced moves
             }
         }
     }

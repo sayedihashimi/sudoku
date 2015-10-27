@@ -29,11 +29,9 @@
                 return null;
             }
 
-            //List<IMove> moves = MoveFinder.FindMoves(new BoardCells(board.CurrentBoard));
             List<IMove> movesRemaining = board.MovesRemaining;
-            IBoardCells current = board.CurrentBoard;
             if (movesRemaining == null) {
-                movesRemaining = MoveFinder.FindMoves(current);
+                movesRemaining = MoveFinder.FindMoves(board.CurrentBoard);
             }
 
             if(movesRemaining.Count <= 0) {
@@ -45,10 +43,9 @@
                 }
             }
 
-            var forcedresult = PlayForcedMoves(current, movesRemaining);
-            current = forcedresult.CurrentBoard;
-            movesRemaining = forcedresult.MovesRemaining;
-            List<IMove> movesPlayed = forcedresult.MovesPlayed;
+            MoveResult currentBoard = PlayForcedMoves(board.CurrentBoard, movesRemaining);        
+            movesRemaining = currentBoard.MovesRemaining;
+            List<IMove> movesPlayed = currentBoard.MovesPlayed;
 
             // make sure each score has a movescore
             foreach(var move in movesRemaining) {
@@ -67,19 +64,30 @@
                         continue;
                     }
 
-                    var newmv = new MoveResult(new BoardCells(new Board(current.Board, move)), movesPlayed, null);
-                    var newresult = SolveBoard(newmv);
+                    movesPlayed.Add(move);
+                    var newmv = new MoveResult(new BoardCells(new Board(currentBoard.CurrentBoard.Board, move)), movesPlayed, null);
+
+                    if (move.MoveScore.Equals(Score.MaxScore)) {
+                        return newmv;
+                    }
+
                     _numMovesTried++;
+                    var newresult = SolveBoard(newmv);                    
                     if (newresult != null && IsSolved(newresult)) {
                         // see if it's solved
                         return newresult;
                     }
+                    movesPlayed.Remove(move);
                 }
 
                 return null;
             }
+
+            if (IsSolved(currentBoard)) {
+                return currentBoard;
+            }
             else {
-                return forcedresult;
+                return null;
             }
         }
 
@@ -95,12 +103,17 @@
         protected MoveResult PlayForcedMoves(IBoardCells board, List<IMove> moves) {
             if (board == null) { throw new ArgumentNullException(nameof(board)); }
             if (moves == null) { throw new ArgumentNullException(nameof(moves)); }
-            
+
+#if DEBUG
+            var actualMoves = MoveFinder.FindMoves(board);
+            if(actualMoves.Count != moves.Count) {
+                string foo = "bar";
+            }
+#endif
             IBoardCells result = new BoardCells(board);
             IBoard playboard = result.Board;
             List<IMove> movesPlayed = new List<IMove>();
-            List<IMove> movesRemaining = moves;
-            List<IMove> forcedMoves = GetForcedMoves(movesRemaining);
+            List<IMove> forcedMoves = GetForcedMoves(moves);
             do {
                 foreach(var move in forcedMoves) {
                     playboard = new Board(playboard, move);
@@ -108,12 +121,12 @@
                     _numMovesTried++;
                 }
 
-                result = new BoardCells(playboard);
-                movesRemaining = MoveFinder.FindMoves(result);
-                forcedMoves = GetForcedMoves(movesRemaining);
+                
+                forcedMoves = GetForcedMoves(MoveFinder.FindMoves(new BoardCells(playboard)));
             } while (forcedMoves.Count > 0);
 
-            return new MoveResult(result, movesPlayed, movesRemaining);
+            result = new BoardCells(playboard);
+            return new MoveResult(result, movesPlayed, MoveFinder.FindMoves(result));
         }
 
         protected List<IMove> GetForcedMoves(IList<IMove>moves) {
