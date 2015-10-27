@@ -124,6 +124,15 @@
                 var moves = finder.FindMoves(new BoardCells(new Board(data)));
                 Assert.Equal(2, moves.Count);
             }
+
+            [Fact]
+            public void TestProblemBoard() {
+                IBoard board = new Board("904581600923760580601392470002810900098420100007956320736148259845239716219675843");
+                var finder = new SimpleMoveFinder();
+                var moves = finder.FindMoves(new BoardCells(board));
+
+                string foo = "bar";
+            }
         }
     }
 }

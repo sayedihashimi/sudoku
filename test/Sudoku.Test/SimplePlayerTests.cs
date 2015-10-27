@@ -5,6 +5,7 @@
     using System.Threading.Tasks;
     using Xunit;
 
+    // test site: http://www.sudoku-solutions.com/
     public class SimplePlayerTests {
         [Fact]
         public void WillReturnEmptyListWhenTheBoardIsAlreadySolved() {
@@ -133,15 +134,17 @@
             Assert.Equal(solvedBoard, result.CurrentBoard.Board);
         }
 
-        //[Fact]
-        //public void CanSolveAHardBoard() {
-        //    IBoard board = new Board("92....3...6.31...4...6..1...7..3...2.4..8..3.1...2..7...9..7...3...48.9...4....58");
-        //    var moveFinder = new SimpleMoveFinder();
-        //    var player = new SimplePlayer(moveFinder, new SimpleEvaluator(moveFinder));
-        //    var result = player.SolveBoard(board);
+        [Fact]
+        public void CanSolveAHardBoard() {
+            // IBoard board = new Board("92....3...6.31...4...6..1...7..3...2.4..8..3.1...2..7...9..7...3...48.9...4....58");
+            IBoard board = new Board("...........3......6.1.9.4....2.1.9...9.42.1....79..32..36.48..98.....71.2.9.7...3");
+            var moveFinder = new SimpleMoveFinder();
+            var player = new SimplePlayer(moveFinder, new SimpleEvaluator(moveFinder));
+            var result = player.SolveBoard(board);
 
-        //    IBoard solvedBoard = new Board("921874365865319724437652189678931542542786931193425876289567413356148297714293658");
-        //    Assert.Equal(solvedBoard, result.CurrentBoard.Board);
-        //}
+            // IBoard solvedBoard = new Board("921874365865319724437652189678931542542786931193425876289567413356148297714293658");
+            IBoard solvedBoard = new Board("475381692923764581681592437562813974398427165147956328736148259854239716219675843");
+            Assert.Equal(solvedBoard, result.CurrentBoard.Board);
+        }
     }
 }

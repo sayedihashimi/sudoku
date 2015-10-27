@@ -45,7 +45,6 @@
                 }
             }
 
-            
             var forcedresult = PlayForcedMoves(current, movesRemaining);
             current = forcedresult.CurrentBoard;
             movesRemaining = forcedresult.MovesRemaining;

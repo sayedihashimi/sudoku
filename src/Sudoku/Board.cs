@@ -2,6 +2,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Text;
     using System.Threading.Tasks;
 
     public interface IBoard {
@@ -46,6 +47,8 @@
             else {
                 throw new ArgumentException($"Unknown board type {nameof(board)}");
             }
+
+            Validate(_data);
         }
 
         /// <summary>
@@ -120,6 +123,32 @@
                     }
                 }
             }
+
+            // check for duplicates in the row/column and later in the square itself
+            for (int i = 0; i < size; i++) {
+                int[] numUsedInRow = new int[size];
+                int[] numUsedInCol = new int[size];
+
+                for (int j = 0; j < size; j++) {
+                    int value = data[i, j];
+                    if (value == 0) { continue; }
+
+                    if (numUsedInRow.Contains(value)) {
+                        throw new ArgumentException($"Duplicate value [{value}] found in row in cell [{i},{j}]");
+                    }
+                    else {
+                        numUsedInRow[value - 1] = value;
+                    }
+
+                    if (numUsedInCol.Contains(value)) {
+                        throw new ArgumentException($"Duplicate value [{value}] found in row in cell [{j},{i}]");
+                    }
+                    else {
+                        numUsedInCol[value - 1] = value;
+                    }
+
+                }
+            }
         }
 
         public override bool Equals(object obj) {
@@ -146,6 +175,32 @@
 
         public override int GetHashCode() {
             return Size.GetHashCode() + _data.GetHashCode();
-        }        
+        }
+
+        public string ToFlatString() {
+            var sb = new StringBuilder(Size * Size);
+            for (int row = 0; row < Size; row++) {
+                for (int col = 0; col < Size; col++) {
+                    sb.Append(_data[row, col].ToString());
+                }
+            }
+            return sb.ToString();
+        }
+
+        public override string ToString() {
+            var gridSize = _data.GetLength(0);
+            var sb = new StringBuilder(Size * Size * Size);
+
+            for (int row = 0; row < Size; row++) {
+                for (int col = 0; col < Size; col++) {
+                    if(col>0 && row < gridSize) {
+                        sb.Append(",");
+                    }
+                    sb.Append(_data[row, col].ToString());
+                }
+                sb.Append(Environment.NewLine);
+            }
+            return sb.ToString();
+        }
     }
 }
