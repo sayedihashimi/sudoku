@@ -134,21 +134,72 @@
                     if (value == 0) { continue; }
 
                     if (numUsedInRow.Contains(value)) {
-                        throw new ArgumentException($"Duplicate value [{value}] found in row in cell [{i},{j}]");
+                        throw new InvalidBoardDataException($"Duplicate value [{value}] found in row in cell [{i},{j}]");
                     }
                     else {
                         numUsedInRow[value - 1] = value;
                     }
 
                     if (numUsedInCol.Contains(value)) {
-                        throw new ArgumentException($"Duplicate value [{value}] found in row in cell [{j},{i}]");
+                        throw new InvalidBoardDataException($"Duplicate value [{value}] found in row in cell [{j},{i}]");
                     }
                     else {
                         numUsedInCol[value - 1] = value;
                     }
-
                 }
             }
+
+            // check each square for duplicates
+            foreach(int[,]square in GetSquares(data)) {
+                // check for duplicates in the square
+                int[] numbersUsed = new int[size];
+
+                foreach(int num in square) {
+                    if (num == 0) { continue; }
+
+                    if (numbersUsed[num - 1] != 0) {
+                        throw new InvalidBoardDataException($"Duplicate value [{num}] found");
+                    }
+                    else {
+                        numbersUsed[num - 1] = num;
+                    }
+                }
+            }
+        }
+
+        public static IList<int[,]> GetSquares(int[,]data) {
+            if (data == null) { throw new ArgumentNullException(nameof(data)); }
+
+            int boardsize = data.GetLength(0);
+            int squaresize = (int)Math.Sqrt(boardsize);
+            int size = boardsize;
+
+            int [,][,]_squaresData = new int[squaresize, squaresize][,];
+            for (int i = 0; i < squaresize; i++) {
+                for (int j = 0; j < squaresize; j++) {
+                    _squaresData[i, j] = new int[squaresize, squaresize];
+                }
+            }
+
+            for (int row = 0; row < size; row++) {
+                for (int col = 0; col < size; col++) {
+                    int sqRowIndex = (int)Math.Floor((double)(row / squaresize));
+                    int sqColIndex = (int)Math.Floor((double)(col / squaresize));
+
+                    int subrow = row - sqRowIndex * squaresize;
+                    int subcol = col - sqColIndex * squaresize;
+                    _squaresData[sqRowIndex, sqColIndex][subrow, subcol] = data[row, col];
+                }
+            }
+
+            IList<int[,]> squareList = new List<int[,]>();
+            for (int i = 0; i < squaresize; i++) {
+                for (int j = 0; j < squaresize; j++) {
+                    squareList.Add(_squaresData[i, j]);
+                }
+            }
+
+            return squareList;
         }
 
         public override bool Equals(object obj) {

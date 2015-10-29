@@ -43,7 +43,15 @@
                 }
             }
 
-            MoveResult currentBoard = PlayForcedMoves(board.CurrentBoard, movesRemaining);        
+            MoveResult currentBoard = null;
+            try{
+                currentBoard = PlayForcedMoves(board.CurrentBoard, movesRemaining);
+            }
+            catch (InvalidBoardDataException) {
+                // unsolveable board
+                return null;
+            }
+
             movesRemaining = currentBoard.MovesRemaining;
             List<IMove> movesPlayed = currentBoard.MovesPlayed;
 
