@@ -5,22 +5,33 @@
     using System.Threading.Tasks;
 
     public interface IMoveFinder {
-        List<IMove> FindMoves(IBoardCells boardCells);
+        List<CellMoves> FindMoves(IBoardCells boardCells);
+
+        CellMoves GetMovesForCell(IBoardCells boardCells, int row, int col);
+    }
+
+    public class CellMoves {
+        public CellMoves(int row, int col, List<IMove> moves) {
+            Row = row;
+            Col = col;
+            Moves = moves;
+        }
+        public int Row { get; }
+        public int Col { get; }
+        public List<IMove> Moves { get; set; }
     }
 
     public class SimpleMoveFinder : IMoveFinder {
-        public List<IMove> FindMoves(IBoardCells boardCells) {
+        public List<CellMoves> FindMoves(IBoardCells boardCells) {
             if (boardCells == null) { throw new ArgumentNullException(nameof(boardCells)); }
 
-            List<IMove> moves = new List<IMove>();
+            var moves = new List<CellMoves>();
             // visit each cell and get available moves
             for (int row = 0; row < boardCells.Board.Size; row++) {
                 for (int col = 0; col < boardCells.Board.Size; col++) {
                     var cellMoves = GetMovesForCell(boardCells, row, col);
-                    foreach (var move in cellMoves) {
-                        if (!moves.Contains(move)) {
-                            moves.Add(move);
-                        }
+                    if (cellMoves.Moves.Count > 0) {
+                        moves.Add(cellMoves);
                     }
                 }
             }
@@ -28,7 +39,7 @@
             return moves;
         }
 
-        public IList<IMove> GetMovesForCell(IBoardCells boardCells, int row, int col) {
+        public CellMoves GetMovesForCell(IBoardCells boardCells, int row, int col) {
             if (boardCells == null) { throw new ArgumentNullException(nameof(boardCells)); }
 
             List<IMove> moves = new List<IMove>();
@@ -64,7 +75,7 @@
                     moves[0].IsForcedMove = true;
                 }
             }
-            return moves;
+            return new CellMoves(row, col, moves);
         }
     }
 }

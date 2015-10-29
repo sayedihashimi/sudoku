@@ -25,10 +25,10 @@
                 SimpleMoveFinder moveFinder = new SimpleMoveFinder();
 
                 var cellMoves = moveFinder.GetMovesForCell(boardCells, 0, 0);
-                Assert.Equal(0, cellMoves.Count);
+                Assert.Equal(0, cellMoves.Moves.Count);
 
                 cellMoves = moveFinder.GetMovesForCell(boardCells, 8, 8);
-                Assert.Equal(0, cellMoves.Count);
+                Assert.Equal(0, cellMoves.Moves.Count);
             }
 
             [Fact]
@@ -51,17 +51,17 @@
                 var cellMoves = moveFinder.GetMovesForCell(boardCells, 0, 1);
                 // 2,3,4
                 int[] expectedValues = new int[] { 2, 3, 4 };
-                Assert.Equal(expectedValues.Length, cellMoves.Count);
+                Assert.Equal(expectedValues.Length, cellMoves.Moves.Count);
 
-                foreach (IMove move in cellMoves) {
+                foreach (IMove move in cellMoves.Moves) {
                     Assert.True(expectedValues.Contains(move.Value));
                 }
 
                 cellMoves = moveFinder.GetMovesForCell(boardCells, 8, 7);
                 expectedValues = new int[] { 1, 2, 5, 9 };
                 // 1,2,5,9
-                Assert.Equal(4, cellMoves.Count);
-                foreach (IMove move in cellMoves) {
+                Assert.Equal(4, cellMoves.Moves.Count);
+                foreach (IMove move in cellMoves.Moves) {
                     Assert.True(expectedValues.Contains(move.Value));
                 }
             }

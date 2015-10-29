@@ -22,9 +22,13 @@
             if (boardCells == null) { throw new ArgumentNullException(nameof(boardCells)); }
 
             // for this basic implementation the score is 1/(# moves on board)
-            IList<IMove> moves = MoveFinder.FindMoves(boardCells);
+            var moves = MoveFinder.FindMoves(boardCells);
+            int numMoves = 0;
+            foreach(var cell in moves) {
+                numMoves += cell.Moves.Count;
+            }
 
-            if (moves == null || moves.Count == 0) {
+            if (numMoves == 0) {
                 // board should be solved
                 if (HasMoves(boardCells.Board)) {
                     // unsolvable board
@@ -35,16 +39,18 @@
                 return Score.MaxScore;
             }
 
-            int numForcedMoves = 0;
-            foreach(var move in moves) {
-                if (move.IsForcedMove.HasValue && move.IsForcedMove.Value) {
-                    numForcedMoves++;
-                }
-            }
+            //int numForcedMoves = 0;
+            //foreach(var cellMove in moves) {
+            //    foreach(var move in cellMove.Moves) {
+            //        if(move.IsForcedMove.HasValue && move.IsForcedMove.Value) {
+            //            numForcedMoves++;
+            //        }
+            //    }
+            //}
 
-            double scorevalue = -1*(2 * (numForcedMoves) + (moves.Count - numForcedMoves));
-            return new Score(scorevalue);
-            // return new Score(-1.0d * moves.Count);
+            // double scorevalue = -1*(2 * (numForcedMoves) + (moves.Count - numForcedMoves));
+            //return new Score(scorevalue);
+            return new Score(-1.0d * moves.Count);
         }
 
         public override IScore GetScore(IMove move) {
