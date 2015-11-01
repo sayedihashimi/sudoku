@@ -25,18 +25,23 @@
         public List<CellMoves> FindMoves(IBoardCells boardCells) {
             if (boardCells == null) { throw new ArgumentNullException(nameof(boardCells)); }
 
-            var moves = new List<CellMoves>();
-            // visit each cell and get available moves
-            for (int row = 0; row < boardCells.Board.Size; row++) {
-                for (int col = 0; col < boardCells.Board.Size; col++) {
-                    var cellMoves = GetMovesForCell(boardCells, row, col);
-                    if (cellMoves.Moves.Count > 0) {
-                        moves.Add(cellMoves);
+            if (boardCells.Board.MovesRemaining == null) {
+
+                var moves = new List<CellMoves>();
+                // visit each cell and get available moves
+                for (int row = 0; row < boardCells.Board.Size; row++) {
+                    for (int col = 0; col < boardCells.Board.Size; col++) {
+                        var cellMoves = GetMovesForCell(boardCells, row, col);
+                        if (cellMoves.Moves.Count > 0) {
+                            moves.Add(cellMoves);
+                        }
                     }
                 }
+
+                boardCells.Board.MovesRemaining = moves;
             }
 
-            return moves;
+            return boardCells.Board.MovesRemaining;
         }
 
         public CellMoves GetMovesForCell(IBoardCells boardCells, int row, int col) {

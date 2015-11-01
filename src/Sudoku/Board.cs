@@ -8,6 +8,7 @@
     public interface IBoard {
         int Size { get; }
         int this[int row, int column] { get; }
+        List<CellMoves> MovesRemaining { get; set; }
     }
 
     public class Board : IBoard {
@@ -17,7 +18,7 @@
         public Board(int[,] data) {
             if (data == null) { throw new ArgumentNullException(nameof(data)); }
 
-            Validate(data);
+            // Validate(data);
             _data = (int[,])data.Clone();
         }
 
@@ -27,7 +28,7 @@
             _data = (int[,])data.Clone();
             _data[move.Row, move.Column] = move.Value;
 
-            Validate(_data);
+            // Validate(_data);
         }
 
         public Board(IBoard board) : this(board, null) {
@@ -48,7 +49,7 @@
                 throw new ArgumentException($"Unknown board type {nameof(board)}");
             }
 
-            Validate(_data);
+            // Validate(_data);
         }
 
         /// <summary>
@@ -56,6 +57,23 @@
         /// </summary>
         /// <param name="dataStr"></param>
         public Board(string dataStr) : this(new Board(GetDataFromString(dataStr))) {
+        }
+
+        public List<CellMoves> MovesRemaining { get; set; }
+
+        public static List<IMove> GetMovesFrom(List<CellMoves> cellMoves) {
+            if (cellMoves == null) { return null; }
+            List<IMove> moves = new List<IMove>();
+
+            foreach (var cell in cellMoves) {
+                if (cell.Moves != null) {
+                    foreach (var move in cell.Moves) {
+                        moves.Add(move);
+                    }
+                }
+            }
+
+            return moves;
         }
 
         private static int[,] GetDataFromString(string dataStr) {
@@ -96,7 +114,11 @@
             }
         }
 
-        public static void Validate(int[,] data) {
+        public static bool Validate(Board board) {
+            return Validate(board._data);
+        }
+
+        public static bool Validate(int[,] data) {
             if (data == null) { throw new ArgumentNullException(nameof(data)); }
 
             if (data.Rank != 2) {
@@ -115,15 +137,6 @@
                 throw new ArgumentException($"Unexpected side length [{size}]. The square root must be an even number");
             }
 
-            for (int rowIndex = 0; rowIndex < size; rowIndex++) {
-                for (int colIndex = 0; colIndex < size; colIndex++) {
-                    // ensure the cell value is <= board.Size and >= 0
-                    if (data[rowIndex, colIndex] > size || data[rowIndex, colIndex] < 0) {
-                        throw new ArgumentException($"Cell value at [{rowIndex},{colIndex}] is invalid, max allowed=[{size}]");
-                    }
-                }
-            }
-
             // check for duplicates in the row/column and later in the square itself
             for (int i = 0; i < size; i++) {
                 int[] numUsedInRow = new int[size];
@@ -133,15 +146,20 @@
                     int value = data[i, j];
                     if (value == 0) { continue; }
 
-                    if (numUsedInRow.Contains(value)) {
-                        throw new InvalidBoardDataException($"Duplicate value [{value}] found in row in cell [{i},{j}]");
+                    if (value > size || value < 0) {
+                        // ensure the cell value is <= board.Size and >= 0
+                        throw new ArgumentException($"Cell value at [{i},{i}] is invalid, max allowed=[{size}]");
+                    }
+
+                    if (numUsedInRow[value - 1] != 0) {
+                        return false;
                     }
                     else {
                         numUsedInRow[value - 1] = value;
                     }
 
-                    if (numUsedInCol.Contains(value)) {
-                        throw new InvalidBoardDataException($"Duplicate value [{value}] found in row in cell [{j},{i}]");
+                    if (numUsedInCol[value - 1] != 0) {
+                        return false;
                     }
                     else {
                         numUsedInCol[value - 1] = value;
@@ -150,31 +168,33 @@
             }
 
             // check each square for duplicates
-            foreach(int[,]square in GetSquares(data)) {
+            foreach (int[,] square in GetSquares(data)) {
                 // check for duplicates in the square
                 int[] numbersUsed = new int[size];
 
-                foreach(int num in square) {
+                foreach (int num in square) {
                     if (num == 0) { continue; }
 
                     if (numbersUsed[num - 1] != 0) {
-                        throw new InvalidBoardDataException($"Duplicate value [{num}] found");
+                        return false;
                     }
                     else {
                         numbersUsed[num - 1] = num;
                     }
                 }
             }
+
+            return true;
         }
 
-        public static IList<int[,]> GetSquares(int[,]data) {
+        public static IList<int[,]> GetSquares(int[,] data) {
             if (data == null) { throw new ArgumentNullException(nameof(data)); }
 
             int boardsize = data.GetLength(0);
             int squaresize = (int)Math.Sqrt(boardsize);
             int size = boardsize;
 
-            int [,][,]_squaresData = new int[squaresize, squaresize][,];
+            int[,][,] _squaresData = new int[squaresize, squaresize][,];
             for (int i = 0; i < squaresize; i++) {
                 for (int j = 0; j < squaresize; j++) {
                     _squaresData[i, j] = new int[squaresize, squaresize];
@@ -244,7 +264,7 @@
 
             for (int row = 0; row < Size; row++) {
                 for (int col = 0; col < Size; col++) {
-                    if(col>0 && row < gridSize) {
+                    if (col > 0 && row < gridSize) {
                         sb.Append(",");
                     }
                     sb.Append(_data[row, col].ToString());

@@ -9,6 +9,7 @@
         IList<int[]> Rows { get;}
         IList<int[]> Columns { get; }
         IList<int[,]> Squares { get; }
+        IScore BoardScore { get; set; }
 
         int[] GetRowForCell(int row, int col);
 
@@ -46,6 +47,7 @@
         public IList<int[]> Rows { get; }
         public IList<int[]> Columns { get; }
         public IList<int[,]> Squares { get; }
+        public IScore BoardScore { get; set; }
         protected internal int[,][,] _squaresData;
 
         protected internal IList<int[]> GetRows(IBoard board) {

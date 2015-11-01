@@ -11,6 +11,21 @@
             MovesPlayed = movesPlayed;
             MovesRemaining = movesRemaining;
         }
+
+        public MoveResult(IBoardCells board, List<IMove> movesPlayed, List<CellMoves> cellMoves) : this(board,movesPlayed, (List<IMove>)null) {
+            MovesRemaining = new List<IMove>();
+
+            if(cellMoves != null) {
+                foreach(var cell in cellMoves) {
+                    if (cell.Moves != null) {
+                        foreach (var move in cell.Moves) {
+                            MovesRemaining.Add(move);
+                        }
+                    }
+                }
+            }            
+        }
+
         public IBoardCells CurrentBoard { get; }
         public List<IMove> MovesPlayed { get; }
         public List<IMove> MovesRemaining { get; }

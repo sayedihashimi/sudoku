@@ -18,12 +18,32 @@
             return GetScore(new BoardCells(board));
         }
 
+        //public override IScore GetScore(IBoardCells boardCells) {
+        //    if (boardCells == null) { throw new ArgumentNullException(nameof(boardCells)); }
+
+        //    // score = (Size*Size - num-non-zero-cells)
+
+        //    if (boardCells.BoardScore == null) {
+        //        int score = boardCells.Board.Size * boardCells.Board.Size;
+        //        int numNonZero = 0;
+        //        for (int row = 0; row < boardCells.Board.Size; row++) {
+        //            for (int col = 0; col < boardCells.Board.Size; col++) {
+        //                if (boardCells.Board[row, col] != 0) {
+        //                    numNonZero++;
+        //                }
+        //            }
+        //        }
+        //    }
+
+        //    return boardCells.BoardScore;
+        //}
+
         public override IScore GetScore(IBoardCells boardCells) {
             if (boardCells == null) { throw new ArgumentNullException(nameof(boardCells)); }
 
             // for this basic implementation the score is 1/(# moves on board)
             var moves = MoveFinder.FindMoves(boardCells);
-            int numMoves = 0;
+            int numMoves = moves.Count;
             foreach(var cell in moves) {
                 numMoves += cell.Moves.Count;
             }
@@ -50,12 +70,36 @@
 
             // double scorevalue = -1*(2 * (numForcedMoves) + (moves.Count - numForcedMoves));
             //return new Score(scorevalue);
-            return new Score(-1.0d * moves.Count);
+            return new Score(-1.0d * numMoves);
         }
 
         public override IScore GetScore(IMove move) {
             if(move.MoveScore == null) {
-                move.MoveScore = GetScore(new Board(move.Board, move));
+                // move.MoveScore = GetScore(new Board(move.Board, move));
+
+                if (move.IsForcedMove.HasValue && move.IsForcedMove.Value) {
+                    move.MoveScore = Score.MaxScore;
+                }
+                else {
+                    // score = num of other cells with the same value
+                    int score = 0;
+                    int numEmptyCells = 0;
+                    for(int row = 0; row < move.Board.Size; row++) {
+                        for(int col = 0; col < move.Board.Size; col++) {
+                            int value = move.Board[row, col];
+                            if (value == move.Value) {
+                                score++;
+                            }
+                            else if(value == 0) {
+                                numEmptyCells = 0;
+                            }
+                        }
+                    }
+
+                    move.MoveScore = new Score(move.Board.Size * move.Board.Size - numEmptyCells + score);
+
+                    // move.MoveScore = new Score(score);
+                }
             }
 
             return move.MoveScore;
