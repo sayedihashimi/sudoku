@@ -41,6 +41,10 @@
         public override IScore GetScore(IBoardCells boardCells) {
             if (boardCells == null) { throw new ArgumentNullException(nameof(boardCells)); }
 
+            if (Board.IsSolved((Board)boardCells.Board)) {
+                return Score.MaxScore;
+            }
+
             // for this basic implementation the score is 1/(# moves on board)
             var moves = MoveFinder.FindMoves(boardCells);
             int numMoves = moves.Count;
@@ -77,6 +81,10 @@
             if(move.MoveScore == null) {
                 // move.MoveScore = GetScore(new Board(move.Board, move));
 
+                if (Board.IsSolved((Board)move.Board)) {
+                    return Score.MaxScore;
+                }
+
                 if (move.IsForcedMove.HasValue && move.IsForcedMove.Value) {
                     move.MoveScore = Score.MaxScore;
                 }
@@ -97,8 +105,6 @@
                     }
 
                     move.MoveScore = new Score(move.Board.Size * move.Board.Size - numEmptyCells + score);
-
-                    // move.MoveScore = new Score(score);
                 }
             }
 

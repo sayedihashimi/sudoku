@@ -135,15 +135,24 @@
         }
 
         [Fact]
-        public void CanSolveAHardBoard() {
-            // IBoard board = new Board("92....3...6.31...4...6..1...7..3...2.4..8..3.1...2..7...9..7...3...48.9...4....58");
+        public void CanSolveAHardBoard01() {
             IBoard board = new Board("...........3......6.1.9.4....2.1.9...9.42.1....79..32..36.48..98.....71.2.9.7...3");
             var moveFinder = new SimpleMoveFinder();
             var player = new SimplePlayer(moveFinder, new SimpleEvaluator(moveFinder));
             var result = player.SolveBoard(board);
 
-            // IBoard solvedBoard = new Board("921874365865319724437652189678931542542786931193425876289567413356148297714293658");
             IBoard solvedBoard = new Board("475381692923764581681592437562813974398427165147956328736148259854239716219675843");
+            Assert.Equal(solvedBoard, result.CurrentBoard.Board);
+        }
+
+        //[Fact]
+        public void CanSolveAHardBoard02() {
+            IBoard board = new Board("..15.....4......7..6..9.1..3....15...9..6...8..57...4..8.1....2..3....5......26..");
+            var moveFinder = new SimpleMoveFinder();
+            var player = new SimplePlayer(moveFinder, new SimpleEvaluator(moveFinder));
+            var result = player.SolveBoard(board);
+
+            IBoard solvedBoard = new Board("931576824452813976867294135328941567794365218615728349586137492243689751179452683");
             Assert.Equal(solvedBoard, result.CurrentBoard.Board);
         }
     }

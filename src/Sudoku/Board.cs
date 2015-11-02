@@ -222,6 +222,25 @@
             return squareList;
         }
 
+        public static bool IsSolved(Board board) {
+            if (board == null) { throw new ArgumentNullException(nameof(board)); }
+
+            // search for a zero value and return
+            for (int row = 0; row < board.Size; row++) {
+                for (int col = 0; col < board.Size; col++) {
+                    if (board[row, col] == 0) {
+                        return false;
+                    }
+                }
+            }
+
+            if (!Board.Validate((Board)board)) {
+                return false;
+            }
+
+            return true;
+        }
+
         public override bool Equals(object obj) {
             Board other = (Board)obj;
             if (other != null) {

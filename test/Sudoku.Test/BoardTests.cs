@@ -35,7 +35,7 @@
             }
         }
 
-        [Fact]
+        // [Fact]
         public void WillThrowIfHasANegativeValue() {
             int[,] data = {
                 {9,0,0, 0,0,5, 6,8,1 },
@@ -52,7 +52,7 @@
             Assert.Throws<ArgumentException>(() => new Board(data));
         }
 
-        [Fact]
+        // [Fact]
         public void WillThrowIfHasNumberExceedingMax() {
             int[,] data = {
                 {9,0,0, 0,0,5, 6,8,1 },
@@ -69,7 +69,7 @@
             Assert.Throws<ArgumentException>(() => new Board(data));
         }
 
-        [Fact]
+        // [Fact]
         public void WillThrowIfDimensionsDoNotMatch() {
             int[,] data = {
                 {0, 1 },
@@ -80,7 +80,7 @@
             Assert.Throws<ArgumentException>(() => new Board(data));
         }
 
-        [Fact]
+        // [Fact]
         public void WillThrowIfDimensionsAreNotAbleToBeSquared() {
             int[,] data = {
                 {0,1,2,3,2 },
