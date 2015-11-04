@@ -50,7 +50,7 @@
                 return board;
             }
 
-            List<CellMoves> boardmoves = boardmoves = MoveFinder.FindMoves(board.CurrentBoard);
+            List<CellMoves> boardmoves = MoveFinder.FindMoves(board.CurrentBoard);
             // make sure each move has a score
             if (boardmoves != null) {
                 foreach (var bm in boardmoves) {
@@ -83,12 +83,6 @@
 
             foreach (var cell in boardmoves) {
                 if (cell.Moves.Count > 0 && board.CurrentBoard.Board[cell.Row, cell.Col] == 0) {
-                    //foreach (var move in cell.Moves) {
-                    //    if (move.MoveScore == null) {
-                    //        move.MoveScore = Evaluator.GetScore(move);
-                    //    }
-                    //}
-
                     if (cell.Moves.Count > 1) {
                         cell.Moves = cell.Moves.OrderBy(move => move.MoveScore.ScoreValue * (-1.0d)).ToList();
                     }
@@ -105,47 +99,8 @@
 
                         movesPlayed.Remove(move);
                     }
-
-                    // unsolveable
-                    // return null;
                 }
             }
-
-            //// for each cell which has a zero value and play it
-            //for(int row = 0; row < board.CurrentBoard.Board.Size; row++) {
-            //    for(int col = 0; col < board.CurrentBoard.Board.Size; col++) {
-            //        if(board.CurrentBoard.Board[row,col] == 0) {
-            //            var cellMoves = MoveFinder.GetMovesForCell(board.CurrentBoard, row, col);
-
-            //            if(cellMoves.Moves.Count == 0) {
-            //                // unsolveable
-            //                return null;
-            //            }
-
-            //            foreach (var move in cellMoves.Moves) {
-            //                if (move.MoveScore == null) {
-            //                    move.MoveScore = Evaluator.GetScore(move);
-            //                }
-            //            }
-            //            cellMoves.Moves = cellMoves.Moves.OrderBy(move => move.MoveScore.ScoreValue * (-1.0d)).ToList();
-            //            foreach (var move in cellMoves.Moves) {
-            //                movesPlayed.Add(move);
-            //                var newmv = new MoveResult(new BoardCells(new Board(board.CurrentBoard.Board, move)), movesPlayed, null);
-
-            //                _numMovesTried++;
-            //                var newresult = SolveBoard(newmv);
-            //                if (newresult != null && IsSolved(newresult)) {
-            //                    return newresult;
-            //                }
-
-            //                movesPlayed.Remove(move);
-            //            }
-
-            //            // unsolveable
-            //            // return null;
-            //        }
-            //    }
-            //}
 
             if (IsSolved(board)) {
                 return board;
@@ -182,12 +137,6 @@
             if (board == null) { throw new ArgumentNullException(nameof(board)); }
             if (moves == null) { throw new ArgumentNullException(nameof(moves)); }
 
-#if DEBUG
-            var actualMoves = MoveFinder.FindMoves(board);
-            if (actualMoves.Count != moves.Count) {
-                string foo = "bar";
-            }
-#endif
             IBoardCells playboardCells = new BoardCells(board);
             IBoard playboard = playboardCells.Board;
             List<IMove> movesPlayed = new List<IMove>();

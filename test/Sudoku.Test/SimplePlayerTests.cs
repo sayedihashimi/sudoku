@@ -145,7 +145,7 @@
             Assert.Equal(solvedBoard, result.CurrentBoard.Board);
         }
 
-        //[Fact]
+        // [Fact]
         public void CanSolveAHardBoard02() {
             IBoard board = new Board("..15.....4......7..6..9.1..3....15...9..6...8..57...4..8.1....2..3....5......26..");
             var moveFinder = new SimpleMoveFinder();
