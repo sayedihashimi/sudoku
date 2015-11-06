@@ -66,25 +66,25 @@
 
             if (boardmoves != null && boardmoves.Count > 1) {
                 // sort each cell by # of cell moves
-                // boardmoves = boardmoves.OrderBy(bm => bm.Moves.Count).ToList();
 
                 boardmoves = boardmoves.OrderByDescending(bm => {
                     double score = 0;
                     score = -bm.Moves.Count;
-                    double movescore = 0.0d;
-                    foreach (var m in bm.Moves) {
-                        movescore += m.MoveScore.ScoreValue;
-                    }
+                    //double movescore = 0.0d;
+                    //foreach (var m in bm.Moves) {
+                    //    movescore += m.MoveScore.ScoreValue;
+                    //}
 
-                    return score - ((1.0d) / movescore);
+                    return score;                    
+                    // return score - ((1.0d) / movescore);
                 }).ToList();
             }
 
             foreach (var cell in boardmoves) {
                 if (cell.Moves.Count > 0 && board.CurrentBoard.Board[cell.Row, cell.Col] == 0) {
-                    if (cell.Moves.Count > 1) {
-                        cell.Moves = cell.Moves.OrderByDescending(move => move.MoveScore.ScoreValue).ToList();
-                    }
+                    //if (cell.Moves.Count > 1) {
+                    //    cell.Moves = cell.Moves.OrderByDescending(move => move.MoveScore.ScoreValue).ToList();
+                    //}
 
                     foreach (var move in cell.Moves) {
                         movesPlayed.Add(move);

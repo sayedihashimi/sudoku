@@ -59,12 +59,7 @@
         }
 
         public override string ToString() {
-            string score = "(none)";
-            if(this.MoveScore != null) {
-                score = MoveScore.ScoreValue.ToString();
-            }
-
-            return $"[{Row},{Column}]={Value} [Score={score}]";
+            return $"[{Row},{Column}]={Value} [Score={MoveScore}]";
         }
     }
 }
