@@ -135,6 +135,17 @@
         }
 
         [Fact]
+        public void CanSolveAMediumBoard01() {
+            IBoard board = new Board(".5..8..3.16...5.74...9...6..4..7.1.2.........5.1.6..4..7...8.1.41.7...23.3..1..9.");
+            var moveFinder = new SimpleMoveFinder();
+            var player = new SimplePlayer(moveFinder, new SimpleEvaluator(moveFinder));
+            var result = player.SolveBoard(board);
+
+            IBoard solvedBoard = new Board("954687231168325974327941568643879152792154386581263749279438615415796823836512497");
+            Assert.Equal(solvedBoard, result.CurrentBoard.Board);
+        }
+
+        // [Fact]
         public void CanSolveAHardBoard01() {
             IBoard board = new Board("...........3......6.1.9.4....2.1.9...9.42.1....79..32..36.48..98.....71.2.9.7...3");
             var moveFinder = new SimpleMoveFinder();
@@ -144,7 +155,7 @@
             IBoard solvedBoard = new Board("475381692923764581681592437562813974398427165147956328736148259854239716219675843");
             Assert.Equal(solvedBoard, result.CurrentBoard.Board);
         }
-
+        
         // [Fact]
         public void CanSolveAHardBoard02() {
             IBoard board = new Board("..15.....4......7..6..9.1..3....15...9..6...8..57...4..8.1....2..3....5......26..");

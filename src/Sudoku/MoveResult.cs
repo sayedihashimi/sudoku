@@ -12,7 +12,7 @@
             MovesRemaining = movesRemaining;
         }
 
-        public MoveResult(IBoardCells board, List<IMove> movesPlayed, List<CellMoves> cellMoves) : this(board,movesPlayed, (List<IMove>)null) {
+        public MoveResult(IBoardCells board, List<IMove> movesPlayed, List<Cell> cellMoves) : this(board,movesPlayed, (List<IMove>)null) {
             MovesRemaining = new List<IMove>();
 
             if(cellMoves != null) {

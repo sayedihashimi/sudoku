@@ -129,6 +129,7 @@
             Assert.True(board2.Equals(board2));
         }
 
+        [Fact]
         public void EqualsReturnsFalseWhenNotEqual() {
             int[,] data1 = {
                 {9,0,0, 0,0,5, 6,8,1 },
@@ -160,6 +161,24 @@
 
             Assert.False(board1.Equals(board2));
             Assert.False(board2.Equals(board1));
+        }
+
+        [Fact]
+        public void WillDetectDuplicateInRow() {
+            Board board = new Board("8.......7..27.83...7..9..4..4..7..9...86.51...15.3..5..8..4..2...35.94..5.......1");
+            Assert.False(Board.IsValid(board));
+        }
+
+        [Fact]
+        public void WillDetectDuplicateInCol() {
+            Board board = new Board("..87..4.1..2..5...4.5.817......78......3....56.....9....3..2.4....5..3..2..4.8..6");
+            Assert.False(Board.IsValid(board));
+        }
+
+        [Fact]
+        public void WillDetectDuplicateInSquare() {
+            Board board = new Board("..7.....8.6..8..3.5..6..4....9..1....3.....1....4..2....3..8..1.8..5..6.4..8..5..");
+            Assert.False(Board.IsValid(board));
         }
     }
 }

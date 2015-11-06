@@ -24,13 +24,15 @@
 
         public static Score MaxScore {
             get {
-                return new Score(double.MaxValue);
+                return new Score(100000);
+                /// return new Score(double.MaxValue);               
             }
         }
 
         public static Score MinScore {
             get {
-                return new Score(double.MinValue);
+                return new Score(-100000);
+                // return new Score(double.MinValue);
             }
         }
 

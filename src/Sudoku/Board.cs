@@ -8,7 +8,7 @@
     public interface IBoard {
         int Size { get; }
         int this[int row, int column] { get; }
-        List<CellMoves> MovesRemaining { get; set; }
+        List<Cell> MovesRemaining { get; set; }
     }
 
     public class Board : IBoard {
@@ -59,9 +59,9 @@
         public Board(string dataStr) : this(new Board(GetDataFromString(dataStr))) {
         }
 
-        public List<CellMoves> MovesRemaining { get; set; }
+        public List<Cell> MovesRemaining { get; set; }
 
-        public static List<IMove> GetMovesFrom(List<CellMoves> cellMoves) {
+        public static List<IMove> GetMovesFrom(List<Cell> cellMoves) {
             if (cellMoves == null) { return null; }
             List<IMove> moves = new List<IMove>();
 
@@ -114,13 +114,11 @@
             }
         }
 
-        public static bool Validate(Board board) {
-            return Validate(board._data);
+        public static bool IsValid(Board board) {
+            return IsValid(board._data);
         }
 
-        public static bool Validate(int[,] data) {
-            if (data == null) { throw new ArgumentNullException(nameof(data)); }
-
+        public static bool IsValid(int[,] data) {
             if (data.Rank != 2) {
                 throw new ArgumentException($"Rank of the array was expected to be 2, but was {data.Rank}");
             }
@@ -138,38 +136,39 @@
             }
 
             // check for duplicates in the row/column and later in the square itself
+            int[] numUsedInRow = new int[size];
+            int[] numUsedInCol = new int[size];
             for (int i = 0; i < size; i++) {
-                int[] numUsedInRow = new int[size];
-                int[] numUsedInCol = new int[size];
+                Array.Clear(numUsedInRow, 0, size);
+                Array.Clear(numUsedInCol, 0, size);
 
                 for (int j = 0; j < size; j++) {
                     int value = data[i, j];
-                    if (value == 0) { continue; }
+                    if(value != 0) {
+                        if (value > size || value < 0) {
+                            // ensure the cell value is <= board.Size and >= 0
+                            throw new ArgumentException($"Cell value at [{i},{i}] is invalid, max allowed=[{size}]");
+                        }
 
-                    if (value > size || value < 0) {
-                        // ensure the cell value is <= board.Size and >= 0
-                        throw new ArgumentException($"Cell value at [{i},{i}] is invalid, max allowed=[{size}]");
-                    }
+                        if (numUsedInRow[value - 1] != 0) {
+                            return false;
+                        }
 
-                    if (numUsedInRow[value - 1] != 0) {
-                        return false;
+                        numUsedInRow[value - 1] = 1;
                     }
-                    else {
-                        numUsedInRow[value - 1] = value;
-                    }
+                    
+                    int colValue = data[j, i];
+                    if (colValue != 0) {
+                        if (numUsedInCol[colValue - 1] != 0) {
+                            return false;
+                        }
 
-                    if (numUsedInCol[value - 1] != 0) {
-                        return false;
-                    }
-                    else {
-                        numUsedInCol[value - 1] = value;
+                        numUsedInCol[colValue - 1] = 1;
                     }
                 }
             }
-
-            // check each square for duplicates
-            foreach (int[,] square in GetSquares(data)) {
-                // check for duplicates in the square
+            
+            foreach(var square in GetSquaresArray(data)) {
                 int[] numbersUsed = new int[size];
 
                 foreach (int num in square) {
@@ -178,39 +177,36 @@
                     if (numbersUsed[num - 1] != 0) {
                         return false;
                     }
-                    else {
-                        numbersUsed[num - 1] = num;
-                    }
+
+                    numbersUsed[num - 1] = 1;
                 }
             }
+
+            // check each square for duplicates
+            //foreach (int[,] square in GetSquares(data)) {
+            //    // check for duplicates in the square
+            //    int[] numbersUsed = new int[size];
+
+            //    foreach (int num in square) {
+            //        if (num == 0) { continue; }
+
+            //        if (numbersUsed[num - 1] != 0) {
+            //            return false;
+            //        }
+            //        else {
+            //            numbersUsed[num - 1] = 1;
+            //        }
+            //    }
+            //}
 
             return true;
         }
 
         public static IList<int[,]> GetSquares(int[,] data) {
-            if (data == null) { throw new ArgumentNullException(nameof(data)); }
-
             int boardsize = data.GetLength(0);
             int squaresize = (int)Math.Sqrt(boardsize);
-            int size = boardsize;
 
-            int[,][,] _squaresData = new int[squaresize, squaresize][,];
-            for (int i = 0; i < squaresize; i++) {
-                for (int j = 0; j < squaresize; j++) {
-                    _squaresData[i, j] = new int[squaresize, squaresize];
-                }
-            }
-
-            for (int row = 0; row < size; row++) {
-                for (int col = 0; col < size; col++) {
-                    int sqRowIndex = (int)Math.Floor((double)(row / squaresize));
-                    int sqColIndex = (int)Math.Floor((double)(col / squaresize));
-
-                    int subrow = row - sqRowIndex * squaresize;
-                    int subcol = col - sqColIndex * squaresize;
-                    _squaresData[sqRowIndex, sqColIndex][subrow, subcol] = data[row, col];
-                }
-            }
+            int[,][,] _squaresData = GetSquaresArray(data);
 
             IList<int[,]> squareList = new List<int[,]>();
             for (int i = 0; i < squaresize; i++) {
@@ -222,9 +218,32 @@
             return squareList;
         }
 
-        public static bool IsSolved(Board board) {
-            if (board == null) { throw new ArgumentNullException(nameof(board)); }
+        public static int[,][,] GetSquaresArray(int[,] data) {
+            int boardsize = data.GetLength(0);
+            int squaresize = (int)Math.Sqrt(boardsize);
 
+            int[,][,] _squaresData = new int[squaresize, squaresize][,];
+            for (int i = 0; i < squaresize; i++) {
+                for (int j = 0; j < squaresize; j++) {
+                    _squaresData[i, j] = new int[squaresize, squaresize];
+                }
+            }
+
+            for (int row = 0; row < boardsize; row++) {
+                for (int col = 0; col < boardsize; col++) {
+                    int sqRowIndex = (int)Math.Floor((double)(row / squaresize));
+                    int sqColIndex = (int)Math.Floor((double)(col / squaresize));
+
+                    int subrow = row - sqRowIndex * squaresize;
+                    int subcol = col - sqColIndex * squaresize;
+                    _squaresData[sqRowIndex, sqColIndex][subrow, subcol] = data[row, col];
+                }
+            }
+
+            return _squaresData;
+        }
+
+        public static bool IsSolved(Board board) {
             // search for a zero value and return
             for (int row = 0; row < board.Size; row++) {
                 for (int col = 0; col < board.Size; col++) {
@@ -234,7 +253,7 @@
                 }
             }
 
-            if (!Board.Validate((Board)board)) {
+            if (!Board.IsValid(board)) {
                 return false;
             }
 

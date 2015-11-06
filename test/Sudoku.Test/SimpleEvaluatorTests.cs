@@ -23,7 +23,7 @@
             var eval = new SimpleEvaluator(new SimpleMoveFinder());
             var score =eval.GetScore(new Board(data));
 
-            Assert.Equal(double.MaxValue, score.ScoreValue);
+            Assert.Equal(Score.MaxScore.ScoreValue, score.ScoreValue);
         }
 
         [Fact]

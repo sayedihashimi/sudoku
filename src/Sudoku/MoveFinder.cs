@@ -5,13 +5,13 @@
     using System.Threading.Tasks;
 
     public interface IMoveFinder {
-        List<CellMoves> FindMoves(IBoardCells boardCells);
+        List<Cell> FindMoves(IBoardCells boardCells);
 
-        CellMoves GetMovesForCell(IBoardCells boardCells, int row, int col);
+        Cell GetMovesForCell(IBoardCells boardCells, int row, int col);
     }
 
-    public class CellMoves {
-        public CellMoves(int row, int col, List<IMove> moves) {
+    public class Cell {
+        public Cell(int row, int col, List<IMove> moves) {
             Row = row;
             Col = col;
             Moves = moves;
@@ -22,12 +22,10 @@
     }
 
     public class SimpleMoveFinder : IMoveFinder {
-        public List<CellMoves> FindMoves(IBoardCells boardCells) {
-            if (boardCells == null) { throw new ArgumentNullException(nameof(boardCells)); }
-
+        public List<Cell> FindMoves(IBoardCells boardCells) {
             if (boardCells.Board.MovesRemaining == null) {
 
-                var moves = new List<CellMoves>();
+                var moves = new List<Cell>();
                 // visit each cell and get available moves
                 for (int row = 0; row < boardCells.Board.Size; row++) {
                     for (int col = 0; col < boardCells.Board.Size; col++) {
@@ -44,9 +42,7 @@
             return boardCells.Board.MovesRemaining;
         }
 
-        public CellMoves GetMovesForCell(IBoardCells boardCells, int row, int col) {
-            if (boardCells == null) { throw new ArgumentNullException(nameof(boardCells)); }
-
+        public Cell GetMovesForCell(IBoardCells boardCells, int row, int col) {
             List<IMove> moves = new List<IMove>();
 
             if (boardCells.Board[row, col] == 0) {
@@ -80,7 +76,7 @@
                     moves[0].IsForcedMove = true;
                 }
             }
-            return new CellMoves(row, col, moves);
+            return new Cell(row, col, moves);
         }
     }
 }
