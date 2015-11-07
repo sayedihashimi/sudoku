@@ -33,7 +33,7 @@
             IsForcedMove = isForcedMove;
 
             if(IsForcedMove.HasValue && IsForcedMove.Value) {
-                MoveScore = Score.MaxScore;
+                MoveScore = Score.ForcedMoveScore;
             }
         }
 

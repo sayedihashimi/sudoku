@@ -134,7 +134,7 @@
             Assert.Equal(solvedBoard, result.CurrentBoard.Board);
         }
 
-        // [Fact]
+        [Fact]
         public void CanSolveAMediumBoard01() {
             IBoard board = new Board(".5..8..3.16...5.74...9...6..4..7.1.2.........5.1.6..4..7...8.1.41.7...23.3..1..9.");
             var moveFinder = new SimpleMoveFinder();
@@ -145,7 +145,7 @@
             Assert.Equal(solvedBoard, result.CurrentBoard.Board);
         }
 
-        // [Fact]
+        [Fact]
         public void CanSolveAHardBoard01() {
             IBoard board = new Board("...........3......6.1.9.4....2.1.9...9.42.1....79..32..36.48..98.....71.2.9.7...3");
             var moveFinder = new SimpleMoveFinder();
@@ -156,7 +156,7 @@
             Assert.Equal(solvedBoard, result.CurrentBoard.Board);
         }
         
-        // [Fact]
+        [Fact]
         public void CanSolveAHardBoard02() {
             IBoard board = new Board("..15.....4......7..6..9.1..3....15...9..6...8..57...4..8.1....2..3....5......26..");
             var moveFinder = new SimpleMoveFinder();
@@ -166,5 +166,17 @@
             IBoard solvedBoard = new Board("931576824452813976867294135328941567794365218615728349586137492243689751179452683");
             Assert.Equal(solvedBoard, result.CurrentBoard.Board);
         }
+
+        [Fact]
+        public void CanSolveADiabolicalBoard01() {
+            IBoard board = new Board("...7.4..5.2..1..7.....8...2.9...625.6...7...8.532...1.4...9.....3..6..9.2..4.7...");
+            var moveFinder = new SimpleMoveFinder();
+            var player = new SimplePlayer(moveFinder, new SimpleEvaluator(moveFinder));
+            var result = player.SolveBoard(board);
+
+            IBoard solvedBoard = new Board("981724365324615879765983142197836254642571938853249716476398521538162497219457683");
+            Assert.Equal(solvedBoard, result.CurrentBoard.Board);
+        }
+
     }
 }

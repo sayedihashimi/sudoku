@@ -5,9 +5,12 @@
     using System.Threading.Tasks;
 
     public abstract class BaseEvaluator : IEvaluator {
+        public abstract IScore GetColScore(IBoardCells board, int col);
+        public abstract IScore GetRowScore(IBoardCells board, int row);
         public abstract IScore GetScore(IMove move);
         public abstract IScore GetScore(IBoardCells boardCells);
         public abstract IScore GetScore(IBoard board);
+        public abstract IScore GetSquareScore(IBoardCells board, int sqRow, int sqCol);
 
         public bool HasMoves(IBoard board) {
             if (board == null) { throw new ArgumentNullException(nameof(board)); }

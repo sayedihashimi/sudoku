@@ -31,5 +31,11 @@
         /// <param name="board"></param>
         /// <returns></returns>
         bool HasMoves(IBoard board);
+
+        IScore GetRowScore(IBoardCells board, int row);
+
+        IScore GetColScore(IBoardCells board, int col);
+
+        IScore GetSquareScore(IBoardCells board, int sqRow, int sqCol);
     }
 }

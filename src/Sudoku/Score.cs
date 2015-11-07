@@ -2,6 +2,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Text;
     using System.Threading.Tasks;
 
     /// <summary>
@@ -10,58 +11,34 @@
     /// Values can be any range of values including negative
     /// </summary>
     public interface IScore : IComparable {
-        // double ScoreValue { get; }
+        
     }
-
-    public class Score : IScore {
-        public Score(double score) {
-            ScoreValue = score;
-        }
-
-        public double ScoreValue {
-            get;
-        }
-
-        public static Score MaxScore {
+    
+    public static class Score {
+        public static IScore InvalidBoardScore {
             get {
-                return new Score(100000);
+                return new MultiPartScore(new double[1] { double.MinValue });
             }
         }
 
-        public static Score MinScore {
+        public static IScore SolvedBoardScore {
             get {
-                return new Score(-100000);
+                return new MultiPartScore(new double[1] { 10000 });
             }
         }
 
-        public override bool Equals(object obj) {
-            Score other = (Score)obj;
-            if (other != null) {
-                return ScoreValue.Equals(other.ScoreValue);
-            }
-            else {
-                return false;
+        public static IScore ForcedMoveScore {
+            get {
+                return new MultiPartScore(new double[1] { 1000 });
             }
         }
 
-        public override int GetHashCode() {
-            return ScoreValue.GetHashCode();
-        }
-
-        public override string ToString() {
-            return $"Score={ScoreValue}";
-        }
-
-        public int CompareTo(object obj) {
-            Score other = (Score)obj;
-            if (other != null) {
-                return ScoreValue.CompareTo(other.ScoreValue);
+        public static IScore SolvedRegionScore {
+            get {
+                return new MultiPartScore(new double[1] { 1000 });
             }
-
-            throw new ArgumentException("Unable to compare score object");
         }
     }
-
 
     public class MultiPartScore : IScore {
 
@@ -74,26 +51,22 @@
             get;
         }
 
-        public static MultiPartScore InvalidBoardScore {
-            get {
-                return new MultiPartScore(new double[1] { double.MinValue });
+        public override bool Equals(object obj) {
+            MultiPartScore other = (MultiPartScore)obj;
+            if(other != null) {
+                return (this.CompareTo(other) == 0);
+            }
+            else {
+                return false;
             }
         }
 
-        public static MultiPartScore SolvedBoardScore() {
-            return new MultiPartScore(new double[1] { 10000 });
-        }
-
-        public static MultiPartScore ForcedMoveScore {
-            get {
-                return new MultiPartScore(new double[1] { 1000 });
+        public override int GetHashCode() {
+            int hashcode = 0;
+            foreach(var item in Parts) {
+                hashcode += item.GetHashCode();
             }
-        }
-
-        public double ScoreValue {
-            get {
-                throw new NotImplementedException();
-            }
+            return hashcode;
         }
 
         // Returns:
@@ -135,6 +108,19 @@
             else {
                 throw new ArgumentException($"Expected an object of type [{typeof(MultiPartScore)}]");
             }
+        }
+
+        public override string ToString() {
+            StringBuilder sb = new StringBuilder();
+
+            for(int index = 0; index < Parts.Length; index++) {
+                if(index != 0) {
+                    sb.Append(".");
+                }
+                sb.Append(Parts[index].ToString());
+            }
+
+            return sb.ToString();
         }
     }
 }

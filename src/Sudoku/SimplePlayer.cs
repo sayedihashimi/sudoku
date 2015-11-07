@@ -27,6 +27,136 @@
             if (board == null) {
                 return null;
             }
+            if (IsSolved(board)) {
+                return board;
+            }
+
+            List<IMove> movesPlayed = new List<IMove>();
+            if (board.MovesPlayed != null && board.MovesPlayed.Count > 0) {
+                movesPlayed.AddRange(board.MovesPlayed);
+            }
+
+            board = PlayForcedMoves(board.CurrentBoard, Board.GetMovesFrom(MoveFinder.FindMoves(board.CurrentBoard)));
+
+            if (board == null) {
+                return null;
+            }
+            if (IsSolved(board)) {
+                return board;
+            }
+
+            IScore maxCurrentScore = Score.InvalidBoardScore;
+
+            int rowToSolve = int.MinValue;
+            int colToSolve = int.MinValue;
+
+            // find the row/column/square to solve next
+            for (int counter = 0; counter < board.CurrentBoard.Board.Size; counter++) {
+                int[] rowcontent = board.CurrentBoard.GetRowForCell(counter, 0);
+                int[] colcontent = board.CurrentBoard.GetColumnForCell(0, counter);
+
+                IScore currentRowScore = Evaluator.GetRowScore(board.CurrentBoard, counter);
+                IScore currentColScore = Evaluator.GetColScore(board.CurrentBoard, counter);
+
+                if (currentRowScore.CompareTo(maxCurrentScore) > 0 && !Score.SolvedRegionScore.Equals(currentRowScore)) {
+                    maxCurrentScore = currentRowScore;
+                    rowToSolve = counter;
+                    colToSolve = int.MinValue;
+                }
+                if (currentColScore.CompareTo(maxCurrentScore) > 0 && !Score.SolvedRegionScore.Equals(currentColScore)) {
+                    maxCurrentScore = currentColScore;
+                    colToSolve = counter;
+                    rowToSolve = int.MinValue;
+                }
+            }
+
+            int[] sqToSolve = null;
+            int sqSize = (int)Math.Sqrt(board.CurrentBoard.Board.Size);
+            for (int sqRow = 0; sqRow < sqSize; sqRow++) {
+                for (int sqCol = 0; sqCol < sqSize; sqCol++) {
+                    // board.CurrentBoard.sq
+                    IScore currentSqScore = Evaluator.GetSquareScore(board.CurrentBoard, sqRow, sqCol);
+                    if (currentSqScore.CompareTo(maxCurrentScore) > 0 && !Score.SolvedRegionScore.Equals(currentSqScore)) {
+                        maxCurrentScore = currentSqScore;
+                        sqToSolve = new int[2] { sqRow, sqCol };
+                        rowToSolve = int.MinValue;
+                        colToSolve = int.MinValue;
+                    }
+                }
+            }
+
+            List<IMove> canidatemoves = new List<IMove>();
+            if(rowToSolve > -1) {
+                for(int col = 0; col < board.CurrentBoard.Board.Size; col++) {
+                    if (board.CurrentBoard.Board[rowToSolve, col] == 0) {
+                        canidatemoves.AddRange(
+                            MoveFinder.GetMovesForCell(board.CurrentBoard, rowToSolve, col).Moves);
+                    }
+                }
+            }
+            else if(colToSolve > -1){
+                for(int row = 0; row < board.CurrentBoard.Board.Size; row++) {
+                    if (board.CurrentBoard.Board[row, colToSolve] == 0) {
+                        canidatemoves.AddRange(
+                            MoveFinder.GetMovesForCell(board.CurrentBoard, row, colToSolve).Moves);
+                    }
+                }
+            }
+            else if(sqToSolve != null) {
+                int row = sqToSolve[0] * sqSize;
+                int col = sqToSolve[1] * sqSize;
+                for(int r = row;r<row + sqSize; r++) {
+                    for(int c= col;c<col+sqSize; c++) {
+                        if (board.CurrentBoard.Board[r, c] == 0) {
+                            canidatemoves.AddRange(
+                                MoveFinder.GetMovesForCell(board.CurrentBoard, r, c).Moves);
+                        }
+                    }
+                }
+            }
+            else {
+                throw new InvalidOperationException("should not get here");
+            }
+
+            if(canidatemoves.Count > 1) {
+                foreach(var mv in canidatemoves) {
+                    if(mv.MoveScore == null) {
+                        mv.MoveScore = Evaluator.GetScore(mv);
+                    }
+                }
+
+                canidatemoves = canidatemoves.OrderByDescending(m => m.MoveScore).ToList();
+            }
+
+            foreach(var move in canidatemoves) {
+                movesPlayed.Add(move);
+                var newmv = new MoveResult(new BoardCells(new Board(board.CurrentBoard.Board, move)), movesPlayed, (List<IMove>)null);
+
+                _numMovesTried++;
+                var newresult = SolveBoard(newmv);
+                if (newresult != null && IsSolved(newresult)) {
+                    return newresult;
+                }
+
+                movesPlayed.Remove(move);
+            }
+
+            if (IsSolved(board)) {
+                return board;
+            }
+
+            return null;
+        }
+
+        protected internal int[] GetNextRangeToSolve(IBoardCells board) {
+
+            throw new NotImplementedException();
+        }
+
+        public MoveResult SolveBoardOld(MoveResult board) {
+            if (board == null) {
+                return null;
+            }
 
             // check if the board is solved and return if so
             if (IsSolved(board)) {
@@ -75,7 +205,7 @@
                     //    movescore += m.MoveScore.ScoreValue;
                     //}
 
-                    return score;                    
+                    return score;
                     // return score - ((1.0d) / movescore);
                 }).ToList();
             }

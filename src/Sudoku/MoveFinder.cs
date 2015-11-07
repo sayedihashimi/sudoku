@@ -10,16 +10,7 @@
         Cell GetMovesForCell(IBoardCells boardCells, int row, int col);
     }
 
-    public class Cell {
-        public Cell(int row, int col, List<IMove> moves) {
-            Row = row;
-            Col = col;
-            Moves = moves;
-        }
-        public int Row { get; }
-        public int Col { get; }
-        public List<IMove> Moves { get; set; }
-    }
+
 
     public class SimpleMoveFinder : IMoveFinder {
         public List<Cell> FindMoves(IBoardCells boardCells) {

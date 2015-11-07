@@ -16,6 +16,8 @@
         int[] GetColumnForCell(int row, int col);
 
         int[,] GetSquareForCell(int row, int col);
+
+        int[,] GetSquare(int squareRow, int squareCol);
     }
 
     public class BoardCells : IBoardCells {
@@ -130,6 +132,10 @@
             int sqColIndex = (int)(Math.Floor((double)(col / squaresize)));
 
             return _squaresData[sqRowIndex, sqColIndex];
+        }
+
+        public int[,] GetSquare(int squareRow, int squareCol) {
+            return _squaresData[squareRow, squareCol];
         }
     }
 }
