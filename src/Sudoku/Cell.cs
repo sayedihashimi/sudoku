@@ -13,5 +13,6 @@ namespace Sudoku {
         public int Row { get; }
         public int Col { get; }
         public List<IMove> Moves { get; set; }
+        public IScore CellScore { get; set; }
     }
 }

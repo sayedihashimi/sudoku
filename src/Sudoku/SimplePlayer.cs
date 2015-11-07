@@ -32,9 +32,9 @@
             }
 
             if(_numMovesTried > 1000000) {
-                throw new InvalidOperationException("Too many moves tried sir");
+                // throw new InvalidOperationException("Too many moves tried sir");
             }
-
+            // Console.WriteLine($"numMovesTried:{_numMovesTried}");
             List<IMove> movesPlayed = new List<IMove>();
             if (board.MovesPlayed != null && board.MovesPlayed.Count > 0) {
                 movesPlayed.AddRange(board.MovesPlayed);
@@ -89,20 +89,21 @@
                 }
             }
 
-            List<IMove> canidatemoves = new List<IMove>();
+            List<Cell> canidatecells = new List<Cell>();
+            // List<IMove> canidatemoves = new List<IMove>();
             if(rowToSolve > -1) {
                 for(int col = 0; col < board.CurrentBoard.Board.Size; col++) {
                     if (board.CurrentBoard.Board[rowToSolve, col] == 0) {
-                        canidatemoves.AddRange(
-                            MoveFinder.GetMovesForCell(board.CurrentBoard, rowToSolve, col).Moves);
+                        canidatecells.Add(
+                            new Cell(rowToSolve, col, MoveFinder.GetMovesForCell(board.CurrentBoard, rowToSolve, col).Moves));
                     }
                 }
             }
             else if(colToSolve > -1){
                 for(int row = 0; row < board.CurrentBoard.Board.Size; row++) {
                     if (board.CurrentBoard.Board[row, colToSolve] == 0) {
-                        canidatemoves.AddRange(
-                            MoveFinder.GetMovesForCell(board.CurrentBoard, row, colToSolve).Moves);
+                        canidatecells.Add(
+                            new Cell(row, colToSolve, MoveFinder.GetMovesForCell(board.CurrentBoard, row, colToSolve).Moves));
                     }
                 }
             }
@@ -112,8 +113,8 @@
                 for(int r = row;r<row + sqSize; r++) {
                     for(int c= col;c<col+sqSize; c++) {
                         if (board.CurrentBoard.Board[r, c] == 0) {
-                            canidatemoves.AddRange(
-                                MoveFinder.GetMovesForCell(board.CurrentBoard, r, c).Moves);
+                            canidatecells.Add(
+                            new Cell(r, c, MoveFinder.GetMovesForCell(board.CurrentBoard, r, c).Moves));
                         }
                     }
                 }
@@ -122,28 +123,57 @@
                 throw new InvalidOperationException("should not get here");
             }
 
-            if(canidatemoves.Count > 1) {
-                foreach(var mv in canidatemoves) {
-                    if(mv.MoveScore == null) {
-                        mv.MoveScore = Evaluator.GetScore(mv);
+            if (canidatecells.Count > 1) {
+                foreach(var cc in canidatecells) {
+                    if(cc.CellScore == null) {
+                        cc.CellScore = Evaluator.GetCellScore(cc);
                     }
                 }
 
-                canidatemoves = canidatemoves.OrderByDescending(m => m.MoveScore).ToList();
+                canidatecells = canidatecells.OrderByDescending(cell => cell.CellScore).ToList();
             }
 
-            foreach(var move in canidatemoves) {
-                movesPlayed.Add(move);
-                var newmv = new MoveResult(new BoardCells(new Board(board.CurrentBoard.Board, move)), movesPlayed, (List<IMove>)null);
-
-                _numMovesTried++;
-                var newresult = SolveBoard(newmv);
-                if (newresult != null && IsSolved(newresult)) {
-                    return newresult;
+            foreach(var cell in canidatecells) {
+                if(cell.Moves.Count > 1) {
+                    cell.Moves = cell.Moves.OrderByDescending(move => move.MoveScore).ToList();
                 }
 
-                movesPlayed.Remove(move);
+                foreach (var move in cell.Moves) {
+                    movesPlayed.Add(move);
+                    var newmv = new MoveResult(new BoardCells(new Board(board.CurrentBoard.Board, move)), movesPlayed, (List<IMove>)null);
+
+                    _numMovesTried++;
+                    var newresult = SolveBoard(newmv);
+                    if (newresult != null && IsSolved(newresult)) {
+                        return newresult;
+                    }
+
+                    movesPlayed.Remove(move);
+                }
             }
+
+            //if(canidatemoves.Count > 1) {
+            //    foreach(var mv in canidatemoves) {
+            //        if(mv.MoveScore == null) {
+            //            mv.MoveScore = Evaluator.GetScore(mv);
+            //        }
+            //    }
+
+            //    canidatemoves = canidatemoves.OrderByDescending(m => m.MoveScore).ToList();
+            //}
+
+            //foreach(var move in canidatemoves) {
+            //    movesPlayed.Add(move);
+            //    var newmv = new MoveResult(new BoardCells(new Board(board.CurrentBoard.Board, move)), movesPlayed, (List<IMove>)null);
+
+            //    _numMovesTried++;
+            //    var newresult = SolveBoard(newmv);
+            //    if (newresult != null && IsSolved(newresult)) {
+            //        return newresult;
+            //    }
+
+            //    movesPlayed.Remove(move);
+            //}
 
             if (IsSolved(board)) {
                 return board;

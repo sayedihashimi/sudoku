@@ -37,5 +37,7 @@
         IScore GetColScore(IBoardCells board, int col);
 
         IScore GetSquareScore(IBoardCells board, int sqRow, int sqCol);
+
+        IScore GetCellScore(Cell cell);
     }
 }

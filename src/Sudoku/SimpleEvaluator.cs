@@ -100,6 +100,24 @@
             return move.MoveScore;
         }
 
+        public override IScore GetCellScore(Cell cell) {
+            if (cell.CellScore == null) {
+                IScore score = Score.EmptyScore;
+
+                if (cell.Moves.Count > 0) {
+                    foreach (var move in cell.Moves) {
+                        if (move.MoveScore == null) {
+                            move.MoveScore = GetScore(move);
+                            score = (MultiPartScore)score + (MultiPartScore)move.MoveScore;
+                        }
+                    }
+                }
+                cell.CellScore = score;
+            }
+
+            return cell.CellScore;
+        }
+
         public override IScore GetRowScore(IBoardCells board, int row) {
             // row score = #-1*empty cells.#total moves in row gd
             int numMoves = 0;

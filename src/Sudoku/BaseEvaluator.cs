@@ -5,6 +5,7 @@
     using System.Threading.Tasks;
 
     public abstract class BaseEvaluator : IEvaluator {
+        public abstract IScore GetCellScore(Cell cell);
         public abstract IScore GetColScore(IBoardCells board, int col);
         public abstract IScore GetRowScore(IBoardCells board, int row);
         public abstract IScore GetScore(IMove move);
