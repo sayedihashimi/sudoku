@@ -31,6 +31,10 @@
                 return board;
             }
 
+            if(_numMovesTried > 1000000) {
+                throw new InvalidOperationException("Too many moves tried sir");
+            }
+
             List<IMove> movesPlayed = new List<IMove>();
             if (board.MovesPlayed != null && board.MovesPlayed.Count > 0) {
                 movesPlayed.AddRange(board.MovesPlayed);
