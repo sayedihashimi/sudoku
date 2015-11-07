@@ -29,25 +29,25 @@
 
 #if DNX451
             LogFilePath = new FileInfo(Environment.ExpandEnvironmentVariables(@"%localappdata%\ligershark\sudoku.txt"));
-            if (!LogFilePath.Directory.Exists) {
-                LogFilePath.Directory.Create();
-            }
-            if (LogFilePath.Exists) {
-                LogFilePath.Delete();
-            }
+            //if (!LogFilePath.Directory.Exists) {
+            //    LogFilePath.Directory.Create();
+            //}
+            //if (LogFilePath.Exists) {
+            //    LogFilePath.Delete();
+            //}
             
 #endif
 
             FailedBoards = new List<string>();
 #if DNX451
-            LogFileStream = File.OpenWrite(LogFilePath.FullName);
+            //LogFileStream = File.OpenWrite(LogFilePath.FullName);
 #endif
             var result = SolveBoard(new MoveResult(new BoardCells(board), new List<IMove>(), (List<IMove>)null));
 
 #if DNX451
-            LogFileStream.Flush();
-            LogFileStream.Dispose();
-            LogFileStream = null;
+            //LogFileStream.Flush();
+            //LogFileStream.Dispose();
+            //LogFileStream = null;
 #endif
             return result;
         }
@@ -198,10 +198,10 @@
         }
 #if DNX451
         private void WriteBoardToLog(string board) {
-            byte[] bytes = System.Text.Encoding.ASCII.GetBytes(board);
-            LogFileStream.Write(bytes, 0, bytes.Length);
-            bytes = System.Text.Encoding.ASCII.GetBytes(Environment.NewLine);
-            LogFileStream.Write(bytes, 0, bytes.Length);
+            //byte[] bytes = System.Text.Encoding.ASCII.GetBytes(board);
+            //LogFileStream.Write(bytes, 0, bytes.Length);
+            //bytes = System.Text.Encoding.ASCII.GetBytes(Environment.NewLine);
+            //LogFileStream.Write(bytes, 0, bytes.Length);
         }
 #endif
 

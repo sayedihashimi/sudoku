@@ -51,10 +51,10 @@ namespace Sudoku
 
             double[] newParts = new double[maxNumParts];
             for (int i = 0; i < maxNumParts; i++) {
-                if (score1 != null && score1.Parts.Length < i) {
+                if (score1 != null && score1.Parts.Length > i) {
                     newParts[i] += score1.Parts[i];
                 }
-                if (score2 != null && score2.Parts.Length < i) {
+                if (score2 != null && score2.Parts.Length > i) {
                     newParts[i] += score2.Parts[i];
                 }
             }

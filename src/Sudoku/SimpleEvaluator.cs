@@ -18,7 +18,7 @@
             if (board == null) { throw new ArgumentNullException(nameof(board)); }
 
             return GetScore(new BoardCells(board));
-        }      
+        }
 
         public override IScore GetScore(IBoardCells boardCells) {
             if (boardCells == null) { throw new ArgumentNullException(nameof(boardCells)); }
@@ -69,7 +69,7 @@
         }
 
         public override IScore GetScore(IMove move) {
-            if(move.MoveScore == null) {
+            if (move.MoveScore == null) {
                 if (Board.IsSolved((Board)move.Board)) {
                     return Score.SolvedBoardScore;
                 }
@@ -81,19 +81,45 @@
                     // score = num of other cells with the same value
                     int score = 0;
                     int numEmptyCells = 0;
-                    for(int row = 0; row < move.Board.Size; row++) {
-                        for(int col = 0; col < move.Board.Size; col++) {
+                    for (int row = 0; row < move.Board.Size; row++) {
+                        for (int col = 0; col < move.Board.Size; col++) {
                             int value = move.Board[row, col];
                             if (value == move.Value) {
                                 score++;
                             }
-                            else if(value == 0) {
+                            else if (value == 0) {
                                 numEmptyCells++;
                             }
                         }
                     }
 
-                    move.MoveScore = new MultiPartScore(new double[2] { numEmptyCells, score });
+                    // find sibling cells
+                    int numNonEmptySiblings = 0;
+                    for (int col = 0; col < move.Board.Size; col++) {
+                        if (move.Board[move.Row, col] != 0) {
+                            numNonEmptySiblings++;
+                        }
+                    }
+                    for (int row = 0; row < move.Board.Size; row++) {
+                        if (move.Board[row, move.Column] != 0) {
+                            numNonEmptySiblings++;
+                        }
+                    }
+
+                    int sqSize = (int)Math.Sqrt(move.Board.Size);
+                    int sqRowIndex = (int)(Math.Floor((double)(move.Row / sqSize)));
+                    int sqColIndex = (int)(Math.Floor((double)(move.Column / sqSize)));
+                    int startRow = sqRowIndex * sqSize;
+                    int startCol = sqColIndex * sqSize;
+                    for (int r = sqRowIndex; r < sqRowIndex + sqSize; r++) {
+                        for (int c = startCol; c < startCol + sqSize; c++) {
+                            if (move.Board[r, c] != 0) {
+                                numNonEmptySiblings++;
+                            }
+                        }
+                    }
+
+                    move.MoveScore = new MultiPartScore(new double[] { numEmptyCells, score, numNonEmptySiblings });
                 }
             }
 
@@ -122,10 +148,10 @@
             // row score = #-1*empty cells.#total moves in row gd
             int numMoves = 0;
             int numEmptyCells = 0;
-            for(int col = 0; col < board.Board.Size; col++) {
+            for (int col = 0; col < board.Board.Size; col++) {
                 var cell = MoveFinder.GetMovesForCell(board, row, col);
 
-                if(cell.Moves != null && cell.Moves.Count > 0) {
+                if (cell.Moves != null && cell.Moves.Count > 0) {
                     numMoves += cell.Moves.Count;
                 }
 
@@ -133,15 +159,15 @@
                     numEmptyCells++;
                 }
             }
-            
-            if(numEmptyCells == 0) {
+
+            if (numEmptyCells == 0) {
                 return Score.SolvedRegionScore;
             }
 
             return new MultiPartScore(new double[] { -numMoves, numEmptyCells });
         }
 
-        public override IScore GetColScore(IBoardCells board, int col) {            
+        public override IScore GetColScore(IBoardCells board, int col) {
             int numMoves = 0;
             int numEmptyCells = 0;
             for (int row = 0; row < board.Board.Size; row++) {
@@ -162,7 +188,7 @@
 
             return new MultiPartScore(new double[] { -numMoves, numEmptyCells });
         }
-       
+
         public override IScore GetSquareScore(IBoardCells board, int sqRow, int sqCol) {
             int numMoves = 0;
             int numEmptyCells = 0;
@@ -170,11 +196,11 @@
             int sqSize = (int)Math.Sqrt(board.Board.Size);
             int row = sqRow * sqSize;
             int col = sqCol * sqSize;
-            
-            for (int r = row;r<row + sqSize; r++) {
-                for(int c = col; c < col + sqSize; c++) {
+
+            for (int r = row; r < row + sqSize; r++) {
+                for (int c = col; c < col + sqSize; c++) {
                     var cell = MoveFinder.GetMovesForCell(board, r, c);
-                    if(cell.Moves != null) {
+                    if (cell.Moves != null) {
                         numMoves += cell.Moves.Count;
                     }
 

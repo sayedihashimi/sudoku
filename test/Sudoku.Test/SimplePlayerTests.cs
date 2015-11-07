@@ -178,5 +178,15 @@
             Assert.Equal(solvedBoard, result.CurrentBoard.Board);
         }
 
+        [Fact]
+        public void CanSolveAHardBoard03() {
+            IBoard board = new Board("5.19..6.2.3..2..7..........1.....8...7..4..1...6.....5..........4..9..3.7.3..15.4");
+            var moveFinder = new SimpleMoveFinder();
+            var player = new SimplePlayer(moveFinder, new SimpleEvaluator(moveFinder));
+            var result = player.SolveBoard(board);
+
+            IBoard solvedBoard = new Board("581937642439625178267814953154369827978542316326178495612453789845796231793281564");
+            Assert.Equal(solvedBoard, result.CurrentBoard.Board);
+        }
     }
 }
