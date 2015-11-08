@@ -29,5 +29,6 @@
         public IBoardCells CurrentBoard { get; }
         public List<IMove> MovesPlayed { get; }
         public List<IMove> MovesRemaining { get; }
+        public IBoardCells OriginalBoard { get; set; }
     }
 }

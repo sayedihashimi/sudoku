@@ -15,6 +15,10 @@
 
         private int[,] _data;
 
+        public Board() {
+            _data = new int[9, 9];
+        }
+
         public Board(int[,] data) {
             if (data == null) { throw new ArgumentNullException(nameof(data)); }
 

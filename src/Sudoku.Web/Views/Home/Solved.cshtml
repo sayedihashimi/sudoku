@@ -1,12 +1,15 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    // ViewBag.Title = "Home Page";
 }
-@model Sudoku.IBoard
+@model Sudoku.MoveResult
 
 <style>
     /* NOTE: The styles were added inline because Prefixfree needs access to your styles and they must be inlined if they are on local disk! */
     table {
-        margin: 1em auto;
+        
     }
 
     td {
@@ -34,13 +37,5 @@
 </style>
 
 <script src="js/prefixfree.min.js"></script>
-<div style="height:10px;">&nbsp;</div>
-<board board="@Model" >
-    <pre><span>foobar here</span></pre>
-</board>
-
-<form asp-action="Solve" method="post" role="form">
-    <input type="text" name="newboard" class="input form-control boardinput" maxlength="81" />
-    <input type="submit" name="submitnewboard" class="btn" value="Solve"/>
-</form>
-   
+<div style="height:10px">&nbsp;</div>
+<move-result MoveResult="@Model"></move-result>

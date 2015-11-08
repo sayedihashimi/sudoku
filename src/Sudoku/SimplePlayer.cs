@@ -19,60 +19,39 @@
         private IEvaluator Evaluator { get; }
 
         private List<string> FailedBoards { get; set; }
-
-#if DNX451
-        private FileStream LogFileStream = null;
-        private FileInfo LogFilePath { get; set; }
-#endif
-
         public MoveResult SolveBoard(IBoard board) {
-
-#if DNX451
-            LogFilePath = new FileInfo(Environment.ExpandEnvironmentVariables(@"%localappdata%\ligershark\sudoku.txt"));
-            //if (!LogFilePath.Directory.Exists) {
-            //    LogFilePath.Directory.Create();
-            //}
-            //if (LogFilePath.Exists) {
-            //    LogFilePath.Delete();
-            //}
-            
-#endif
-
             FailedBoards = new List<string>();
-#if DNX451
-            //LogFileStream = File.OpenWrite(LogFilePath.FullName);
-#endif
-            var result = SolveBoard(new MoveResult(new BoardCells(board), new List<IMove>(), (List<IMove>)null));
+            var originalBoard = new BoardCells(board);
+            var result = SolveBoard(new MoveResult(originalBoard, new List<IMove>(), (List<IMove>)null));
 
-#if DNX451
-            //LogFileStream.Flush();
-            //LogFileStream.Dispose();
-            //LogFileStream = null;
-#endif
+            result.OriginalBoard = originalBoard;
             return result;
         }
 
-        public MoveResult SolveBoard(MoveResult board) {
-            if (FailedBoards.Contains(((Board)board.CurrentBoard.Board).ToFlatString())) {
+        public MoveResult SolveBoard(MoveResult board) {            
+            if (board == null) {
                 return null;
             }
-            if (board == null) {
+            if (FailedBoards.Contains(((Board)board.CurrentBoard.Board).ToFlatString())) {
                 return null;
             }
             if (IsSolved(board)) {
                 return board;
             }
 
-            if (_numMovesTried > 1000000) {
-                // throw new InvalidOperationException("Too many moves tried sir");
+            if (_numMovesTried > 50000) {
+                throw new InvalidOperationException("Too many moves tried sir");
             }
             // Console.WriteLine($"numMovesTried:{_numMovesTried}");
-            List<IMove> movesPlayed = new List<IMove>();
-            if (board.MovesPlayed != null && board.MovesPlayed.Count > 0) {
-                movesPlayed.AddRange(board.MovesPlayed);
-            }
+            //List<IMove> movesPlayed = new List<IMove>();
+            //if (board.MovesPlayed != null && board.MovesPlayed.Count > 0) {
+            //    movesPlayed.AddRange(board.MovesPlayed);
+            //}
 
-            board = PlayForcedMoves(board.CurrentBoard, Board.GetMovesFrom(MoveFinder.FindMoves(board.CurrentBoard)));
+            board = PlayForcedMoves(board.CurrentBoard, Board.GetMovesFrom(MoveFinder.FindMoves(board.CurrentBoard)), board.MovesPlayed);
+
+            List<IMove> movesPlayed = board.MovesPlayed;
+            if (movesPlayed == null) { movesPlayed = new List<IMove>(); }
 
             if (board == null) {
                 return null;
@@ -173,10 +152,7 @@
                 foreach (var move in cell.Moves) {
                     movesPlayed.Add(move);
                     var newmv = new MoveResult(new BoardCells(new Board(board.CurrentBoard.Board, move)), movesPlayed, (List<IMove>)null);
-
-#if DNX451
-                    WriteBoardToLog(((Board)board.CurrentBoard.Board).ToFlatString());
-#endif
+                    var foo = new IMove[1];
 
                     _numMovesTried++;
                     var newresult = SolveBoard(newmv);
@@ -196,14 +172,6 @@
             FailedBoards.Add(((Board)board.CurrentBoard.Board).ToFlatString());
             return null;
         }
-#if DNX451
-        private void WriteBoardToLog(string board) {
-            //byte[] bytes = System.Text.Encoding.ASCII.GetBytes(board);
-            //LogFileStream.Write(bytes, 0, bytes.Length);
-            //bytes = System.Text.Encoding.ASCII.GetBytes(Environment.NewLine);
-            //LogFileStream.Write(bytes, 0, bytes.Length);
-        }
-#endif
 
         protected internal bool IsSolved(MoveResult moveResult) {
             var board = moveResult.CurrentBoard.Board;
@@ -222,13 +190,17 @@
 
             return true;
         }
+
         /// <summary>
         /// Will play all forced moves. The result returned will be the resulting
         /// board and an unsorted move list which does not have any forced moves.
         /// </summary>
-        protected MoveResult PlayForcedMoves(IBoardCells board, List<IMove> moves) {
+        protected MoveResult PlayForcedMoves(IBoardCells board, List<IMove> moves,IList<IMove>previousMovesPlayed) {
             IBoard playboard = board.Board;
             List<IMove> movesPlayed = new List<IMove>();
+            if(previousMovesPlayed != null) {
+                movesPlayed.AddRange(previousMovesPlayed);
+            }
             List<IMove> forcedMoves = GetForcedMoves(moves);
             IBoardCells playboardCells = new BoardCells(playboard);
 
