@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Mvc;
+using System.Text;
 
 namespace Sudoku.Web.Controllers
 {
@@ -44,6 +45,16 @@ namespace Sudoku.Web.Controllers
             }
 
             return View("Index", new Board(newboard));
+        }
+
+        [HttpPost]
+        public IActionResult SolveFromGrid(int[] board) {
+            StringBuilder sb = new StringBuilder();
+            for(int i = 0; i < board.Length; i++) {
+                sb.Append(board[i].ToString());
+            }
+
+            return Solve(sb.ToString());
         }
     }
 }

@@ -42,20 +42,16 @@
             if (_numMovesTried > 50000) {
                 throw new InvalidOperationException("Too many moves tried sir");
             }
-            // Console.WriteLine($"numMovesTried:{_numMovesTried}");
-            //List<IMove> movesPlayed = new List<IMove>();
-            //if (board.MovesPlayed != null && board.MovesPlayed.Count > 0) {
-            //    movesPlayed.AddRange(board.MovesPlayed);
-            //}
-
+            
             board = PlayForcedMoves(board.CurrentBoard, Board.GetMovesFrom(MoveFinder.FindMoves(board.CurrentBoard)), board.MovesPlayed);
-
-            List<IMove> movesPlayed = board.MovesPlayed;
-            if (movesPlayed == null) { movesPlayed = new List<IMove>(); }
 
             if (board == null) {
                 return null;
             }
+
+            List<IMove> movesPlayed = board.MovesPlayed;
+            if (movesPlayed == null) { movesPlayed = new List<IMove>(); }
+
             if (IsSolved(board)) {
                 return board;
             }

@@ -35,12 +35,18 @@
 
 <script src="js/prefixfree.min.js"></script>
 <div style="height:10px;">&nbsp;</div>
-<board board="@Model" >
-    <pre><span>foobar here</span></pre>
-</board>
-
-<form asp-action="Solve" method="post" role="form">
-    <input type="text" name="newboard" class="input form-control boardinput" maxlength="81" />
-    <input type="submit" name="submitnewboard" class="btn" value="Solve"/>
+<form asp-action="SolveFromGrid" method="post" role="form" id="solvegridform">
+    <board board="@Model" editable="true"></board>
+    <br/>
+    <input type="submit" name="submitnewboardfromgrid" class="btn" value="Solve" />
+    <input type="button" name="cleargrid" class="btn" value="Clear" onclick="$('#solvegridform :text').each(function (i, t) { t.value = 0 })" />
 </form>
-   
+<br />
+- or -
+<br />
+<form asp-action="Solve" method="post" role="form">
+    <label for="newboard">Enter a board to solve:</label>
+    <input type="text" name="newboard" class="input form-control boardinput" maxlength="81" value="8..3......9.....7...3584...4...9...2...4.7...78...1..5..96...2.....5..31........6" />
+    <input type="submit" name="submitnewboard" class="btn" value="Solve" />
+</form>
+
