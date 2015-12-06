@@ -7,9 +7,6 @@ environment:
 
 configuration: Release
 
-before_build:
-  - nuget restore Sudoku.sln
-
 build_script:
   - ps: .\appveyor.ps1
 
