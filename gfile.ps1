@@ -17,15 +17,15 @@ task default -dependsOn build
 
 task init{
     requires -nameorurl psbuild -version '1.1.5-beta' -noprefix -condition (-not (Get-Command -Module psbuild -Name Invoke-MSBuild -ErrorAction SilentlyContinue) )
-
     if(-not(Test-Path $outputPath)){
         New-Item -ItemType Directory -Path $outputPath
     }
 }
 
 task build{
-    & dnvm list
+    Import-NugetPowershell
+    Invoke-CommandString 'dnvm list'
     set-location $slnFile.Directory.FullName
-    & dnu restore
+    Invoke-CommandString 'dnu restore'
     Invoke-MSBuild -projectsToBuild ($slnFile.FullName) -configuration Release -visualStudioVersion 14.0 -outputPath $outputPath
 }
