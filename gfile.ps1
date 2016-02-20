@@ -24,5 +24,8 @@ task init{
 }
 
 task build{
+    dnvm list
+    set-location $slnFile.Directory.FullName
+    dnu restore
     Invoke-MSBuild -projectsToBuild ($slnFile.FullName) -configuration Release -visualStudioVersion 14.0 -outputPath $outputPath
 }
