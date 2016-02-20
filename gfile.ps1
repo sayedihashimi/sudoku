@@ -24,8 +24,8 @@ task init{
 
 task build{
     Import-NugetPowershell
-    Invoke-CommandString 'dnvm list'
+    Execute-CommandString 'dnvm list'
     set-location $slnFile.Directory.FullName
-    Invoke-CommandString 'dnu restore'
+    Execute-CommandString 'dnu restore'
     Invoke-MSBuild -projectsToBuild ($slnFile.FullName) -configuration Release -visualStudioVersion 14.0 -outputPath $outputPath
 }
