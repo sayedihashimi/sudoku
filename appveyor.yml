@@ -1,16 +1,16 @@
-os: Visual Studio 2015
-
-environment:
-  VisualStudioVersion: 14.0
-  NuGetApiKey:
-    secure: HFUEQanhaxHV/sRQYznQqg7LToxSGeIoSvrmyY29PJ1eDbXxUuYrEQ6MPAsZIQFT
-
+version: 1.0.{build}
+image: Visual Studio 2022
 configuration: Release
 
-build_script:
-  - ps: .\appveyor.ps1
+init:
+- pwsh: if(test-path -LiteralPath ./ci.build.init.ps1){. ./ci.build.init.ps1}
+
+before_build:
+  - dotnet restore
+
+build:
+  project: Sudoku.sln
+  verbosity: normal
 
 artifacts:
-  - path: OutputRoot\**\*
-  
-test: off
+ - path: '**\nupkg\*.nupkg'
