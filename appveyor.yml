@@ -12,5 +12,9 @@ build:
   project: Sudoku.sln
   verbosity: normal
 
+test_script:
+  - ps: >
+      dotnet test --logger:trx
+
 artifacts:
  - path: '**\nupkg\*.nupkg'
