@@ -1,0 +1,57 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download dotnet-install script
+        run: |
+          curl -fsSL https://dot.net/v1/dotnet-install.sh -o dotnet-install.sh
+          chmod +x dotnet-install.sh
+
+      - name: Install latest .NET SDK 10.x
+        run: |
+          mkdir -p "$RUNNER_TEMP/dotnet"
+          ./dotnet-install.sh --channel 10.0 --quality ga --install-dir "$RUNNER_TEMP/dotnet" || ./dotnet-install.sh --channel LTS --install-dir "$RUNNER_TEMP/dotnet"
+          echo "DOTNET_ROOT=$RUNNER_TEMP/dotnet" >> $GITHUB_ENV
+          echo "$RUNNER_TEMP/dotnet:$RUNNER_TEMP/dotnet/tools" >> $GITHUB_PATH
+          "$RUNNER_TEMP/dotnet/dotnet" --version
+          if ! "$RUNNER_TEMP/dotnet/dotnet" --version | grep -q '^10\.'; then
+            echo 'Expected .NET 10 SDK but got:'
+            "$RUNNER_TEMP/dotnet/dotnet" --version
+            exit 1
+          fi
+
+      - name: Display dotnet info
+        run: |
+          dotnet --info
+
+      - name: Cache NuGet packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: nuget-${{ runner.os }}-${{ hashFiles('**/packages.lock.json') }}
+          restore-keys: |
+            nuget-${{ runner.os }}-
+
+      - name: Restore
+        run: |
+          "$RUNNER_TEMP/dotnet/dotnet" restore src/Sudoku/Sudoku.csproj
+          "$RUNNER_TEMP/dotnet/dotnet" restore test/Sudoku.Test/Sudoku.Test.csproj
+
+      - name: Build (Release)
+        run: |
+          "$RUNNER_TEMP/dotnet/dotnet" build src/Sudoku/Sudoku.csproj --configuration Release --no-restore
+          "$RUNNER_TEMP/dotnet/dotnet" build test/Sudoku.Test/Sudoku.Test.csproj --configuration Release --no-restore
+
+      - name: Test
+        run: |
+          "$RUNNER_TEMP/dotnet/dotnet" test test/Sudoku.Test/Sudoku.Test.csproj --configuration Release --no-build --verbosity normal
